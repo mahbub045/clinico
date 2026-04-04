@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  ClipboardPlusIcon,
-  LogOutIcon,
-  ShieldIcon,
-  StethoscopeIcon,
-} from "lucide-react";
+import { Home, LogOutIcon, StethoscopeIcon, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -26,13 +21,13 @@ import {
 } from "@/components/ui/sidebar";
 
 const navItems = [
-  { href: "/dashboard/doctor", label: "Doctor", icon: StethoscopeIcon },
+  { href: "/dashboard/doctor", label: "Home", icon: Home },
   {
-    href: "/dashboard/receptionist",
-    label: "Receptionist",
-    icon: ClipboardPlusIcon,
+    href: "/dashboard/doctor/appointments",
+    label: "Appointments",
+    icon: StethoscopeIcon,
   },
-  { href: "/dashboard/admin", label: "Admin", icon: ShieldIcon },
+  { href: "/dashboard/doctor/patients", label: "Patients", icon: Users },
 ] as const;
 
 export function AppSidebar() {
