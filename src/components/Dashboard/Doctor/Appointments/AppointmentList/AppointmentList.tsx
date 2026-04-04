@@ -1,4 +1,4 @@
-import { Edit2, Plus, SearchIcon, Trash2 } from "lucide-react";
+import { Edit, Plus, SearchIcon, Trash2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -198,13 +198,13 @@ const AppointmentList: React.FC = () => {
         <Table className="border-border bg-card w-full border text-sm shadow-sm">
           <TableHeader>
             <TableRow>
-              <TableHead>Patient</TableHead>
-              <TableHead>Date / Time</TableHead>
-              <TableHead>Department</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Room</TableHead>
-              <TableHead className="truncate">Notes</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-primary">Patient</TableHead>
+              <TableHead className="text-primary">Date / Time</TableHead>
+              <TableHead className="text-primary">Department</TableHead>
+              <TableHead className="text-primary">Status</TableHead>
+              <TableHead className="text-primary">Room</TableHead>
+              <TableHead className="text-primary truncate">Notes</TableHead>
+              <TableHead className="text-primary text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -236,17 +236,15 @@ const AppointmentList: React.FC = () => {
                 <TableCell className="text-right">
                   <div className="inline-flex items-center justify-end gap-2">
                     <Button
-                      variant="ghost"
+                      variant="secondary"
                       size="sm"
-                      className="text-foreground hover:bg-muted"
                       aria-label={`Edit appointment for ${appointment.patient}`}
                     >
-                      <Edit2 />
+                      <Edit />
                     </Button>
                     <Button
                       variant="danger"
                       size="sm"
-                      className="text-foreground hover:bg-destructive/10"
                       aria-label={`Delete appointment for ${appointment.patient}`}
                     >
                       <Trash2 />
