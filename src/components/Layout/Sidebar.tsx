@@ -32,6 +32,16 @@ const navItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const normalizedPathname = pathname?.replace(/\/$/, "") ?? "";
+
+  const activeItem = navItems
+    .slice()
+    .sort((a, b) => b.href.length - a.href.length)
+    .find(
+      (item) =>
+        normalizedPathname === item.href ||
+        normalizedPathname.startsWith(`${item.href}/`),
+    );
 
   return (
     <Sidebar>
@@ -52,9 +62,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => {
-                const isActive =
-                  pathname === item.href ||
-                  pathname.startsWith(`${item.href}/`);
+                const isActive = item.href === activeItem?.href;
                 const Icon = item.icon;
 
                 return (

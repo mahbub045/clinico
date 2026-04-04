@@ -27,7 +27,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
   }
 
   return (
-    <Breadcrumb className="mb-6 flex justify-end">
+    <Breadcrumb className="mb-6">
       <BreadcrumbList>
         {items.map((item, index) => (
           <React.Fragment key={index}>
