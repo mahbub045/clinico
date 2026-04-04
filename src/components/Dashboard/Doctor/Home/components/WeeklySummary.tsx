@@ -12,8 +12,8 @@ export default function WeeklySummary() {
   const maxCount = Math.max(...weeklyData.map((item) => item.count));
 
   return (
-    <section className="rounded-[2rem] border border-border/70 bg-card/90 p-6 shadow-sm shadow-slate-950/10 dark:bg-slate-950/90 dark:shadow-black/10">
-      <div className="mb-6 flex items-center justify-between gap-4">
+    <section className="rounded-[2rem] border border-border/70 bg-card/90 p-4 shadow-sm shadow-slate-950/10 dark:bg-slate-950/90 dark:shadow-black/10 sm:p-6">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary">
             Weekly Summary
