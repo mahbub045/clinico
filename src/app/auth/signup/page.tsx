@@ -121,7 +121,7 @@ const SignUp: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setShowPassword((prev) => !prev)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
                       aria-label={
                         showPassword ? "Hide password" : "Show password"
                       }
@@ -148,7 +148,7 @@ const SignUp: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword((prev) => !prev)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
                       aria-label={
                         showConfirmPassword
                           ? "Hide confirm password"
@@ -166,7 +166,7 @@ const SignUp: React.FC = () => {
 
                 <div className="space-y-3 sm:flex sm:items-center sm:justify-between sm:gap-3">
                   <Button type="submit" className="w-full sm:w-auto" size="lg">
-                    <ArrowRight className="mr-2 size-4" />
+                    <ArrowRight className="size-4" />
                     Create account
                   </Button>
                   <Link
