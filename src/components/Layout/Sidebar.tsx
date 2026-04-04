@@ -2,7 +2,7 @@
 
 import { Home, LogOutIcon, StethoscopeIcon, Users } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -32,7 +32,26 @@ const navItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const normalizedPathname = pathname?.replace(/\/$/, "") ?? "";
+
+  function clearCookie(name: string) {
+    if (typeof document === "undefined") return;
+    document.cookie = `${name}=; Path=/; Max-Age=0; SameSite=Lax`;
+  }
+
+  function handleLogout() {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("token");
+      localStorage.removeItem("refresh");
+      localStorage.removeItem("user_type");
+    }
+
+    clearCookie("token");
+    clearCookie("user_type");
+
+    router.replace("/auth/signin");
+  }
 
   const activeItem = navItems
     .slice()
@@ -49,7 +68,7 @@ export function AppSidebar() {
         <div className="flex h-[31] items-center px-2 text-sm font-semibold">
           <Link
             href="/dashboard/doctor"
-            className="truncate text-3xl text-primary"
+            className="text-primary truncate text-3xl"
           >
             ClinicO
           </Link>
@@ -91,11 +110,8 @@ export function AppSidebar() {
           <Button
             variant="danger"
             size="sm"
-            className="w-full justify-center gap-2 rounded-lg text-sm font-semibold cursor-pointer"
-            onClick={() => {
-              // TODO: replace with real logout action
-              console.log("Logout clicked");
-            }}
+            className="w-full cursor-pointer justify-center gap-2 rounded-lg text-sm font-semibold"
+            onClick={handleLogout}
           >
             <LogOutIcon className="size-4" />
             Logout

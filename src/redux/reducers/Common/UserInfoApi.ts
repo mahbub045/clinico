@@ -9,4 +9,4 @@ export const UserInfoApi = BaseApi.injectEndpoints({
   }),
 });
 
-export const { useGetUserInfoQuery } = UserInfoApi;
+export const { useGetUserInfoQuery, useLazyGetUserInfoQuery } = UserInfoApi;

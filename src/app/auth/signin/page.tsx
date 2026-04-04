@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLoginMutation } from "@/redux/reducers/Auth/LoginApi";
-import { useGetUserInfoQuery } from "@/redux/reducers/Common/UserInfoApi";
+import { useLazyGetUserInfoQuery } from "@/redux/reducers/Common/UserInfoApi";
 import {
   ArrowRight,
   Eye,
@@ -15,15 +15,127 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+
+type JwtLoginResponse = {
+  access?: string;
+  refresh?: string;
+  token?: string;
+};
+
+type UserInfoResponse = {
+  user_type?: string;
+};
+
+function getRedirectPathByUserType(userType?: string | null) {
+  switch ((userType ?? "").toUpperCase()) {
+    case "ADMIN":
+      return "/dashboard/admin";
+    case "RECEPTIONIST":
+      return "/dashboard/receptionist";
+    case "DOCTOR":
+      return "/dashboard/doctor";
+    default:
+      return "/dashboard/doctor";
+  }
+}
+
+function setAuthCookie(
+  name: string,
+  value: string,
+  maxAgeSeconds = 60 * 60 * 24 * 7,
+) {
+  if (typeof document === "undefined") return;
+  const encoded = encodeURIComponent(value);
+  document.cookie = `${name}=${encoded}; Path=/; Max-Age=${maxAgeSeconds}; SameSite=Lax`;
+}
 
 const SignIn: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [formError, setFormError] = useState<string | null>(null);
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextParam = useMemo(() => searchParams.get("next"), [searchParams]);
 
   // RTK
   const [signIn, { isLoading, error }] = useLoginMutation();
-  const { data: userInfo, isLoading: isUserInfoLoading } =
-    useGetUserInfoQuery(undefined);
+  const [triggerUserInfo, { isLoading: isUserInfoLoading }] =
+    useLazyGetUserInfoQuery();
+
+  useEffect(() => {
+    // If already authenticated, redirect away from sign-in.
+    const existingToken =
+      typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    if (!existingToken) return;
+
+    (async () => {
+      try {
+        const user = (await triggerUserInfo(
+          undefined,
+        ).unwrap()) as UserInfoResponse;
+        const redirectTo =
+          nextParam || getRedirectPathByUserType(user?.user_type);
+        if (user?.user_type) {
+          localStorage.setItem("user_type", user.user_type);
+          setAuthCookie("user_type", user.user_type);
+        }
+        setAuthCookie("token", existingToken);
+        router.replace(redirectTo);
+      } catch {
+        // Token might be stale; let the user sign in.
+      }
+    })();
+  }, [nextParam, router, triggerUserInfo]);
+
+  const isSubmitting = isLoading || isUserInfoLoading;
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setFormError(null);
+
+    if (!email || !password) {
+      setFormError("Email and password are required.");
+      return;
+    }
+
+    try {
+      const result = (await signIn({
+        email,
+        password,
+      }).unwrap()) as JwtLoginResponse;
+      const token = result.access ?? result.token;
+      const refresh = result.refresh;
+
+      if (!token) {
+        setFormError("Login succeeded but no access token was returned.");
+        return;
+      }
+
+      localStorage.setItem("token", token);
+      setAuthCookie("token", token);
+      if (refresh) {
+        localStorage.setItem("refresh", refresh);
+      }
+
+      const user = (await triggerUserInfo(
+        undefined,
+      ).unwrap()) as UserInfoResponse;
+      const userType = user?.user_type;
+      if (userType) {
+        localStorage.setItem("user_type", userType);
+        setAuthCookie("user_type", userType);
+      }
+
+      router.push(nextParam || getRedirectPathByUserType(userType));
+    } catch (err) {
+      // RTK Query provides `error` but it's not always the latest in this scope.
+      console.error("Sign in failed", err);
+    }
+  }
 
   return (
     <main className="text-foreground relative min-h-screen overflow-hidden bg-linear-to-br from-slate-50 via-slate-100 to-slate-200">
@@ -87,7 +199,7 @@ const SignIn: React.FC = () => {
                 </p>
               </div>
 
-              <form className="space-y-5">
+              <form className="space-y-5" onSubmit={handleSubmit}>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -96,6 +208,10 @@ const SignIn: React.FC = () => {
                     type="email"
                     placeholder="you@clinico.com"
                     className="w-full"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="email"
+                    required
                   />
                 </div>
 
@@ -116,6 +232,10 @@ const SignIn: React.FC = () => {
                       type={showPassword ? "text" : "password"}
                       placeholder="••••••••"
                       className="w-full pr-12"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      autoComplete="current-password"
+                      required
                     />
                     <button
                       type="button"
@@ -140,6 +260,7 @@ const SignIn: React.FC = () => {
                     variant="secondary"
                     size="lg"
                     className="w-full sm:w-auto"
+                    disabled={isSubmitting}
                   >
                     <Link href="/auth/signup" className="w-full text-center">
                       <Lock className="inline size-4" />
@@ -151,11 +272,19 @@ const SignIn: React.FC = () => {
                     type="submit"
                     className="w-full sm:w-auto"
                     size="lg"
+                    disabled={isSubmitting}
                   >
                     <ArrowRight className="size-4" />
-                    Sign In
+                    {isSubmitting ? "Signing in…" : "Sign In"}
                   </Button>
                 </div>
+
+                {(formError || error) && (
+                  <p className="text-destructive text-sm leading-6">
+                    {formError ??
+                      "Sign in failed. Please check your credentials."}
+                  </p>
+                )}
 
                 <p className="text-muted-foreground text-center text-sm leading-6">
                   By signing in, you agree to Clinico’s terms and privacy
