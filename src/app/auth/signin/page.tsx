@@ -37,7 +37,7 @@ function getRedirectPathByUserType(userType?: string | null) {
     case "DOCTOR":
       return "/dashboard/doctor";
     default:
-      return "/dashboard/doctor";
+      return "/unauthorized";
   }
 }
 

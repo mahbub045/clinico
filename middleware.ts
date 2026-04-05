@@ -31,17 +31,36 @@ export function middleware(req: NextRequest) {
 
     // Keep users within their role area when user_type is known.
     const normalized = (userType ?? "").toUpperCase();
+    const isAdminArea = pathname.startsWith("/dashboard/admin");
+    const isReceptionistArea = pathname.startsWith("/dashboard/receptionist");
+    const isDoctorArea = pathname.startsWith("/dashboard/doctor");
+
+    if (
+      userType &&
+      ((isAdminArea && normalized !== "ADMIN") ||
+        (isReceptionistArea && normalized !== "RECEPTIONIST") ||
+        (isDoctorArea && normalized !== "DOCTOR"))
+    ) {
+      const url = req.nextUrl.clone();
+      url.pathname = "/unauthorized";
+      url.searchParams.set("next", req.nextUrl.pathname + req.nextUrl.search);
+      return NextResponse.redirect(url);
+    }
+
     if (normalized === "ADMIN" && pathname.startsWith("/dashboard/admin")) {
       return NextResponse.next();
     }
-    if (normalized === "RECEPTIONIST" && pathname.startsWith("/dashboard/receptionist")) {
+    if (
+      normalized === "RECEPTIONIST" &&
+      pathname.startsWith("/dashboard/receptionist")
+    ) {
       return NextResponse.next();
     }
     if (normalized === "DOCTOR" && pathname.startsWith("/dashboard/doctor")) {
       return NextResponse.next();
     }
 
-    if (userType && (pathname.startsWith("/dashboard/admin") || pathname.startsWith("/dashboard/receptionist") || pathname.startsWith("/dashboard/doctor"))) {
+    if (userType && (isAdminArea || isReceptionistArea || isDoctorArea)) {
       const url = req.nextUrl.clone();
       url.pathname = roleHome;
       url.search = "";
