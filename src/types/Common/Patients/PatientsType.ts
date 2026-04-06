@@ -8,6 +8,7 @@ export type RawPatient = {
   date_of_birth?: string | null;
   gender?: string;
   last_visit?: string;
+  user_phone?: string;
   id?: string;
 } & Record<string, unknown>;
 
@@ -18,4 +19,5 @@ export type PatientRow = {
   gender: string;
   lastVisit: string;
   email: string;
+  phone: string;
 };

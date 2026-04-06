@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Edit,
-  LoaderPinwheel,
-  Plus,
-  SearchIcon,
-  Trash,
-  User,
-} from "lucide-react";
+import { Edit, LoaderPinwheel, SearchIcon, Trash, User } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -23,6 +16,7 @@ import {
 import { useGetPatientsQuery } from "@/redux/reducers/Common/Patients/PatientsApi";
 import { PatientRow, RawPatient } from "@/types/Common/Patients/PatientsType";
 import { formatChoiceFieldValue } from "../../../../../../utils/formatters";
+import AddPatientDialog from "./Dialogs/AddPatientDialog";
 
 const formatAge = (dateOfBirth?: string | null) => {
   if (!dateOfBirth) return "-";
@@ -56,6 +50,7 @@ const normalizePatient = (patient: RawPatient): PatientRow => {
     gender: patient.gender || "Unknown",
     lastVisit: patient.last_visit || "-",
     email: patient.user_email || "-",
+    phone: patient.user_phone || "-",
   };
 };
 
@@ -83,7 +78,7 @@ const PatientList: React.FC = () => {
   const filteredPatients = useMemo(
     () =>
       normalizedPatients.filter((patient) =>
-        [patient.name, patient.gender, patient.email]
+        [patient.name, patient.gender, patient.email, patient.phone]
           .join(" ")
           .toLowerCase()
           .includes(query.toLowerCase()),
@@ -105,10 +100,7 @@ const PatientList: React.FC = () => {
               className="w-full pl-10"
             />
           </div>
-          <Button variant="secondary">
-            <Plus className="size-4" />
-            New patient
-          </Button>
+          <AddPatientDialog />
         </div>
         <Table className="border-border bg-card w-full border text-sm shadow-sm">
           <TableHeader>
@@ -116,6 +108,8 @@ const PatientList: React.FC = () => {
               <TableHead className="text-primary">Name</TableHead>
               <TableHead className="text-primary">Age</TableHead>
               <TableHead className="text-primary">Gender</TableHead>
+              <TableHead className="text-primary">Email</TableHead>
+              <TableHead className="text-primary">Phone</TableHead>
               <TableHead className="text-primary">Last visit</TableHead>
               <TableHead className="text-primary text-right">Actions</TableHead>
             </TableRow>
@@ -123,7 +117,7 @@ const PatientList: React.FC = () => {
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={5} className="py-10 text-center">
+                <TableCell colSpan={7} className="py-10 text-center">
                   <div className="text-muted-foreground flex items-center justify-center gap-2">
                     <LoaderPinwheel className="text-primary animate-spin" />
                   </div>
@@ -146,6 +140,8 @@ const PatientList: React.FC = () => {
                   <TableCell>
                     {formatChoiceFieldValue(patient.gender)}
                   </TableCell>
+                  <TableCell>{patient.email}</TableCell>
+                  <TableCell>{patient.phone}</TableCell>
                   <TableCell>{patient.lastVisit}</TableCell>
                   <TableCell className="text-right">
                     <div className="inline-flex items-center justify-end gap-2">
