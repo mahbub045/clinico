@@ -143,7 +143,8 @@ const EditPatietDialog: React.FC<EditPatietDialogProps> = ({
         suburb: formData.suburb,
         postal_code: formData.postal_code,
         address: formData.address,
-        date_of_birth: formData.date_of_birth || "",
+        date_of_birth:
+          formData.date_of_birth === "" ? null : formData.date_of_birth,
         gender: formData.gender || "",
         blood_group: formData.blood_group || "",
         emergency_contact_name: formData.emergency_contact_name,

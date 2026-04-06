@@ -1,8 +1,10 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { useGetPatientDetailsQuery } from "@/redux/reducers/Common/Patients/PatientsApi";
-import { LoaderPinwheel } from "lucide-react";
+import { Edit, LoaderPinwheel } from "lucide-react";
 import { useParams } from "next/navigation";
 import { formatChoiceFieldValue } from "../../../../../../../utils/formatters";
+import EditPatietDialog from "../Dialogs/EditPatietDialog";
 
 const PatientDetails: React.FC = () => {
   const { alias } = useParams() as { alias?: string };
@@ -22,6 +24,33 @@ const PatientDetails: React.FC = () => {
             Review the selected patient’s profile and contact details.
           </p>
         </div>
+        {patient ? (
+          <EditPatietDialog
+            alias={patient.alias ?? ""}
+            initialValues={{
+              email: patient.email ?? "",
+              first_name: patient.first_name ?? "",
+              last_name: patient.last_name ?? "",
+              phone: patient.phone ?? "",
+              title: patient.title ?? null,
+              suburb: patient.suburb ?? "",
+              postal_code: patient.postal_code ?? "",
+              address: patient.address ?? "",
+              profile_image: null,
+              date_of_birth: patient.date_of_birth ?? null,
+              gender: patient.gender ?? null,
+              blood_group: patient.blood_group ?? null,
+              emergency_contact_name: patient.emergency_contact_name ?? "",
+              emergency_contact_phone: patient.emergency_contact_phone ?? "",
+              medical_history: patient.medical_history ?? "",
+            }}
+          >
+            <Button variant="secondary" size="sm">
+              <Edit className="size-4" />
+              Edit
+            </Button>
+          </EditPatietDialog>
+        ) : null}
       </div>
 
       {isLoading ? (
