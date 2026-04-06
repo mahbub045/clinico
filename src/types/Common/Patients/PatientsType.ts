@@ -11,3 +11,21 @@ export type RawPatient = {
   phone?: string;
   id?: string;
 } & Record<string, unknown>;
+
+export type AddPatientPayload = {
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  title: string | null;
+  suburb: string;
+  postal_code: string;
+  address: string;
+  profile_image: File | null;
+  date_of_birth: string | null;
+  gender: string | null;
+  blood_group: string | null;
+  emergency_contact_name: string;
+  emergency_contact_phone: string;
+  medical_history: string;
+};

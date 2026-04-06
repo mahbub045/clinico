@@ -22,26 +22,9 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useAddPatientMutation } from "@/redux/reducers/Common/Patients/PatientsApi";
+import { AddPatientPayload } from "@/types/Common/Patients/PatientsType";
 import { Plus } from "lucide-react";
 import { toast } from "react-toastify";
-
-type AddPatientPayload = {
-  email: string;
-  first_name: string;
-  last_name: string;
-  phone: string;
-  title: string | null;
-  suburb: string;
-  postal_code: string;
-  address: string;
-  profile_image: File | null;
-  date_of_birth: string | null;
-  gender: string | null;
-  blood_group: string | null;
-  emergency_contact_name: string;
-  emergency_contact_phone: string;
-  medical_history: string;
-};
 
 const initialFormState: AddPatientPayload = {
   email: "",
@@ -157,11 +140,12 @@ const AddPatientDialog: React.FC = () => {
                 htmlFor="title"
                 className="text-foreground text-sm font-medium"
               >
-                Title
+                Title<span className="text-danger">*</span>
               </label>
               <Select
                 value={formData.title ?? "none"}
                 onValueChange={(value) => handleChange("title", value)}
+                required
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select..." />
@@ -186,12 +170,13 @@ const AddPatientDialog: React.FC = () => {
                 htmlFor="first_name"
                 className="text-foreground text-sm font-medium"
               >
-                First name
+                First name<span className="text-danger">*</span>
               </label>
               <Input
                 id="first_name"
                 value={formData.first_name}
                 onChange={handleInputChange("first_name")}
+                required
                 placeholder="First name"
               />
             </div>
@@ -201,13 +186,31 @@ const AddPatientDialog: React.FC = () => {
                 htmlFor="last_name"
                 className="text-foreground text-sm font-medium"
               >
-                Last name
+                Last name<span className="text-danger">*</span>
               </label>
               <Input
                 id="last_name"
                 value={formData.last_name}
                 onChange={handleInputChange("last_name")}
+                required
                 placeholder="Last name"
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <label
+                htmlFor="email"
+                className="text-foreground text-sm font-medium"
+              >
+                Email<span className="text-danger">*</span>
+              </label>
+              <Input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={handleInputChange("email")}
+                required
+                placeholder="Email address"
               />
             </div>
 
