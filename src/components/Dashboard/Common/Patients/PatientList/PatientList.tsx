@@ -93,7 +93,7 @@ const PatientList: React.FC = () => {
   );
 
   return (
-    <div className="card bg-card space-y-10 rounded-md border p-6 shadow-sm">
+    <div className="card bg-card space-y-10 rounded-md p-6 shadow-sm">
       <section className="space-y-4">
         <div className="grid w-full grid-cols-[1fr_auto] gap-3">
           <div className="relative w-sm">
