@@ -1,0 +1,120 @@
+"use client";
+import { useGetPatientDetailsQuery } from "@/redux/reducers/Common/Patients/PatientsApi";
+import { useParams } from "next/navigation";
+import { formatChoiceFieldValue } from "../../../../../../../utils/formatters";
+import Breadcrumbs from "../../../Breadcrumbs/Breadcrumbs";
+
+const PatientDetails: React.FC = () => {
+  const alias = useParams();
+  const { data: patient, isLoading } = useGetPatientDetailsQuery(alias);
+  return (
+    <div className="space-y-8">
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/dashboard/doctor" },
+          { label: "Patients", href: "/dashboard/doctor/patients" },
+          { label: "Details", href: `/dashboard/doctor/patients/${alias}` },
+        ]}
+      />
+
+      <div className="grid gap-4 md:grid-cols-[1fr_auto]">
+        <div>
+          <h1 className="text-foreground text-2xl font-semibold">
+            Patient details
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Review the selected patient’s profile and contact details.
+          </p>
+        </div>
+      </div>
+
+      {!patient ? (
+        <div className="border-border bg-card text-destructive rounded-xl border p-6 text-center">
+          Unable to load patient details.
+        </div>
+      ) : (
+        <div className="grid gap-6">
+          <div className="border-border bg-card rounded-xl border p-6 shadow-sm">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <p className="text-muted-foreground text-sm">Name</p>
+                <p className="text-foreground text-lg font-semibold">
+                  {[
+                    formatChoiceFieldValue(patient.title),
+                    patient.first_name,
+                    patient.last_name,
+                  ]
+                    .filter(Boolean)
+                    .join(" ") || "Unknown"}
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground text-sm">Email</p>
+                <p className="text-foreground">{patient.email || "-"}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground text-sm">Phone</p>
+                <p className="text-foreground">{patient.phone || "-"}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground text-sm">Gender</p>
+                <p className="text-foreground">
+                  {formatChoiceFieldValue(patient.gender) || "-"}
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground text-sm">Date of birth</p>
+                <p className="text-foreground">
+                  {patient.date_of_birth || "-"}
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground text-sm">Blood group</p>
+                <p className="text-foreground">{patient.blood_group || "-"}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground text-sm">Suburb</p>
+                <p className="text-foreground">{patient.suburb || "-"}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground text-sm">Postal code</p>
+                <p className="text-foreground">{patient.postal_code || "-"}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-border bg-card rounded-xl border p-6 shadow-sm">
+            <h2 className="text-foreground text-base font-semibold">
+              Additional details
+            </h2>
+            <div className="grid gap-4 pt-4 md:grid-cols-2">
+              <div>
+                <p className="text-muted-foreground text-sm">Address</p>
+                <p className="text-foreground">{patient.address || "-"}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground text-sm">
+                  Emergency contact
+                </p>
+                <p className="text-foreground">
+                  {patient.emergency_contact_name || "-"}
+                </p>
+                <p className="text-muted-foreground text-sm">
+                  {patient.emergency_contact_phone || "-"}
+                </p>
+              </div>
+              <div className="md:col-span-2">
+                <p className="text-muted-foreground text-sm">Medical history</p>
+                <p className="text-foreground">
+                  {patient.medical_history || "-"}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default PatientDetails;

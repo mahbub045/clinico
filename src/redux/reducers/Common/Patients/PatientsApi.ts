@@ -10,6 +10,14 @@ export const PatientsApi = BaseApi.injectEndpoints({
       }),
       providesTags: ["Patients"],
     }),
+    getPatientDetails: build.query({
+      query: (alias) => ({
+        url: `/api/patients/${alias}/`,
+        method: "GET",
+      }),
+      providesTags: (result, error, alias) =>
+        alias ? [{ type: "Patients", id: alias }] : ["Patients"],
+    }),
     addPatient: build.mutation({
       query: (data) => ({
         url: "/api/patients/",
@@ -38,6 +46,7 @@ export const PatientsApi = BaseApi.injectEndpoints({
 
 export const {
   useGetPatientsQuery,
+  useGetPatientDetailsQuery,
   useAddPatientMutation,
   useEditPatientMutation,
   useDeletePatientMutation,

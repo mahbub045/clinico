@@ -1,6 +1,7 @@
 "use client";
 
 import { Edit, LoaderPinwheel, SearchIcon, Trash, User } from "lucide-react";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -155,6 +156,13 @@ const PatientList: React.FC = () => {
                   <TableCell>{patient.last_visit}</TableCell>
                   <TableCell className="text-right">
                     <div className="inline-flex items-center justify-end gap-2">
+                      <Button asChild variant="secondary" size="sm">
+                        <Link
+                          href={`/dashboard/doctor/patients/${patient.alias}`}
+                        >
+                          View
+                        </Link>
+                      </Button>
                       <Button variant="secondary" size="sm">
                         <Edit />
                       </Button>
