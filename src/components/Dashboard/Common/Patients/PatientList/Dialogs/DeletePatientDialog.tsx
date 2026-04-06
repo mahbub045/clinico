@@ -12,14 +12,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useDeletePatientMutation } from "@/redux/reducers/Common/Patients/PatientsApi";
+import { DeletePatientDialogProps } from "@/types/Common/Patients/PatientsType";
 import { Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
-
-interface DeletePatientDialogProps {
-  alias: string;
-  patientName?: string;
-  children?: React.ReactNode;
-}
 
 const DeletePatientDialog: React.FC<DeletePatientDialogProps> = ({
   alias,

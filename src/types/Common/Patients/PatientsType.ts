@@ -29,3 +29,15 @@ export type AddPatientPayload = {
   emergency_contact_phone: string;
   medical_history: string;
 };
+
+export interface EditPatietDialogProps {
+  alias: string;
+  initialValues: Partial<AddPatientPayload>;
+  children?: React.ReactNode;
+}
+
+export interface DeletePatientDialogProps {
+  alias: string;
+  patientName?: string;
+  children?: React.ReactNode;
+}

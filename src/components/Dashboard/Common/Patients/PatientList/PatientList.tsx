@@ -31,10 +31,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useGetPatientsQuery } from "@/redux/reducers/Common/Patients/PatientsApi";
-import { RawPatient } from "@/types/Common/Patients/PatientsType";
+import {
+  AddPatientPayload,
+  RawPatient,
+} from "@/types/Common/Patients/PatientsType";
 import { formatChoiceFieldValue } from "../../../../../../utils/formatters";
 import AddPatientDialog from "./Dialogs/AddPatientDialog";
 import DeletePatientDialog from "./Dialogs/DeletePatientDialog";
+import EditPatietDialog from "./Dialogs/EditPatietDialog";
 
 const formatAge = (dateOfBirth?: string | null) => {
   if (!dateOfBirth) return "-";
@@ -218,9 +222,17 @@ const PatientList: React.FC = () => {
                           <Eye />
                         </Link>
                       </Button>
-                      <Button variant="secondary" size="sm">
-                        <Edit />
-                      </Button>
+                      <EditPatietDialog
+                        alias={patient.alias ?? ""}
+                        initialValues={
+                          (patient as RawPatient &
+                            Partial<AddPatientPayload>) ?? {}
+                        }
+                      >
+                        <Button variant="secondary" size="sm">
+                          <Edit />
+                        </Button>
+                      </EditPatietDialog>
                       <DeletePatientDialog
                         alias={patient.alias ?? ""}
                         patientName={patient.name || "Not provided"}
