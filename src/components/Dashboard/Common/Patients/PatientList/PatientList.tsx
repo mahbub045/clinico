@@ -2,6 +2,7 @@
 
 import { Edit, LoaderPinwheel, SearchIcon, Trash, User } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -85,6 +86,9 @@ const PatientList: React.FC = () => {
     [rawPatients],
   );
 
+  const pathname = usePathname();
+  const dashboardRole = pathname?.split("/")[2] || "";
+
   const totalPages = patientsData?.total_pages ?? 1;
   const currentPage = patientsData?.current_page ?? page;
   const totalItems = patientsData?.total_items ?? normalizedPatients.length;
@@ -158,7 +162,7 @@ const PatientList: React.FC = () => {
                     <div className="inline-flex items-center justify-end gap-2">
                       <Button asChild variant="secondary" size="sm">
                         <Link
-                          href={`/dashboard/doctor/patients/${patient.alias}`}
+                          href={`/dashboard/${dashboardRole}/patients/${patient.alias}`}
                         >
                           View
                         </Link>

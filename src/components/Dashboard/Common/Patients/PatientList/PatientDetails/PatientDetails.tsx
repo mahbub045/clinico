@@ -2,21 +2,14 @@
 import { useGetPatientDetailsQuery } from "@/redux/reducers/Common/Patients/PatientsApi";
 import { useParams } from "next/navigation";
 import { formatChoiceFieldValue } from "../../../../../../../utils/formatters";
-import Breadcrumbs from "../../../Breadcrumbs/Breadcrumbs";
 
 const PatientDetails: React.FC = () => {
   const alias = useParams();
-  const { data: patient, isLoading } = useGetPatientDetailsQuery(alias);
+  console.log("A::", alias);
+  const { data: patient, isLoading } = useGetPatientDetailsQuery({ alias });
+
   return (
     <div className="space-y-8">
-      <Breadcrumbs
-        items={[
-          { label: "Home", href: "/dashboard/doctor" },
-          { label: "Patients", href: "/dashboard/doctor/patients" },
-          { label: "Details", href: `/dashboard/doctor/patients/${alias}` },
-        ]}
-      />
-
       <div className="grid gap-4 md:grid-cols-[1fr_auto]">
         <div>
           <h1 className="text-foreground text-2xl font-semibold">

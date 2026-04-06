@@ -11,12 +11,11 @@ export const PatientsApi = BaseApi.injectEndpoints({
       providesTags: ["Patients"],
     }),
     getPatientDetails: build.query({
-      query: (alias) => ({
+      query: ({alias}) => ({
         url: `/api/patients/${alias}/`,
         method: "GET",
       }),
-      providesTags: (result, error, alias) =>
-        alias ? [{ type: "Patients", id: alias }] : ["Patients"],
+      providesTags: ["Patients"],
     }),
     addPatient: build.mutation({
       query: (data) => ({
