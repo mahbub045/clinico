@@ -6,6 +6,14 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
   Table,
   TableBody,
   TableCell,
@@ -55,9 +63,11 @@ const normalizePatient = (
 
 const PatientList: React.FC = () => {
   const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
 
   const { data: patientsData, isLoading } = useGetPatientsQuery({
     search: query,
+    page,
   });
 
   const rawPatients = useMemo(() => {
@@ -74,15 +84,13 @@ const PatientList: React.FC = () => {
     [rawPatients],
   );
 
-  const filteredPatients = useMemo(
-    () =>
-      normalizedPatients.filter((patient) =>
-        [patient.name, patient.gender, patient.email, patient.phone]
-          .join(" ")
-          .toLowerCase()
-          .includes(query.toLowerCase()),
-      ),
-    [normalizedPatients, query],
+  const totalPages = patientsData?.total_pages ?? 1;
+  const currentPage = patientsData?.current_page ?? page;
+  const totalItems = patientsData?.total_items ?? normalizedPatients.length;
+
+  const paginationPages = useMemo(
+    () => Array.from({ length: totalPages }, (_, index) => index + 1),
+    [totalPages],
   );
 
   return (
@@ -94,14 +102,17 @@ const PatientList: React.FC = () => {
             <Input
               id="patient-search"
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setPage(1);
+              }}
               placeholder="Search patients..."
               className="w-full pl-10"
             />
           </div>
           <AddPatientDialog />
         </div>
-        <Table className="border-border bg-card w-full border text-sm shadow-sm">
+        <Table className="bg-card w-full border text-sm shadow-sm">
           <TableHeader>
             <TableRow>
               <TableHead className="text-primary">Name</TableHead>
@@ -123,7 +134,7 @@ const PatientList: React.FC = () => {
                 </TableCell>
               </TableRow>
             ) : (
-              filteredPatients.map((patient, index) => (
+              normalizedPatients.map((patient, index) => (
                 <TableRow key={patient.alias ?? patient.email ?? index}>
                   <TableCell className="text-foreground font-medium">
                     <div className="flex items-center gap-3">
@@ -158,10 +169,55 @@ const PatientList: React.FC = () => {
           </TableBody>
         </Table>
 
-        <p className="text-muted-foreground text-sm">
-          Showing patients that match your current search. Refine search to
-          update results.
-        </p>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-muted-foreground text-sm">
+            Total Patients: {totalItems}.
+          </p>
+          {totalPages > 1 && (
+            <Pagination className="w-full sm:w-auto">
+              <PaginationPrevious
+                href="#"
+                className={
+                  currentPage <= 1
+                    ? "pointer-events-none opacity-50"
+                    : undefined
+                }
+                onClick={(event) => {
+                  event.preventDefault();
+                  if (currentPage > 1) setPage(currentPage - 1);
+                }}
+              />
+              <PaginationContent>
+                {paginationPages.map((pageNumber) => (
+                  <PaginationItem key={pageNumber}>
+                    <PaginationLink
+                      href="#"
+                      isActive={pageNumber === currentPage}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        setPage(pageNumber);
+                      }}
+                    >
+                      {pageNumber}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+              </PaginationContent>
+              <PaginationNext
+                href="#"
+                className={
+                  currentPage >= totalPages
+                    ? "pointer-events-none opacity-50"
+                    : undefined
+                }
+                onClick={(event) => {
+                  event.preventDefault();
+                  if (currentPage < totalPages) setPage(currentPage + 1);
+                }}
+              />
+            </Pagination>
+          )}
+        </div>
       </section>
     </div>
   );

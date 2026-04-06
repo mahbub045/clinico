@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -24,6 +22,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAddPatientMutation } from "@/redux/reducers/Common/Patients/PatientsApi";
 import { AddPatientPayload } from "@/types/Common/Patients/PatientsType";
 import { Plus } from "lucide-react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 
 const initialFormState: AddPatientPayload = {
@@ -47,13 +46,23 @@ const initialFormState: AddPatientPayload = {
 const AddPatientDialog: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState<AddPatientPayload>(initialFormState);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [addPatient, { isLoading }] = useAddPatientMutation();
+
+  const clearFieldError = (key: keyof AddPatientPayload) => {
+    setFieldErrors((prev) => {
+      const next = { ...prev };
+      delete next[key as string];
+      return next;
+    });
+  };
 
   const handleInputChange =
     (key: Exclude<keyof AddPatientPayload, "profile_image">) =>
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const value = event.target.value;
 
+      clearFieldError(key);
       setFormData((prev) => ({
         ...prev,
         [key]:
@@ -78,14 +87,23 @@ const AddPatientDialog: React.FC = () => {
   };
 
   const handleChange = (key: keyof AddPatientPayload, value: string) => {
+    clearFieldError(key);
     setFormData((prev) => ({
       ...prev,
-      [key]: value === "none" ? null : value,
+      [key]: value === "" ? null : value,
     }));
   };
 
+  const renderFieldError = (field: keyof AddPatientPayload) =>
+    fieldErrors[field]?.map((error, idx) => (
+      <p key={idx} className="text-destructive text-xs">
+        {error}
+      </p>
+    ));
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setFieldErrors({});
 
     try {
       const body = new FormData();
@@ -113,6 +131,32 @@ const AddPatientDialog: React.FC = () => {
       setOpen(false);
     } catch (error) {
       console.error("Failed to add patient", error);
+
+      const apiErrors =
+        error && typeof error === "object" && "data" in error
+          ? (error as { data?: unknown }).data
+          : null;
+
+      if (apiErrors && typeof apiErrors === "object") {
+        const parsedErrors = Object.entries(apiErrors).reduce(
+          (acc, [key, value]) => {
+            if (Array.isArray(value)) {
+              acc[key] = value.map((item) => String(item));
+            } else if (value != null) {
+              acc[key] = [String(value)];
+            }
+            return acc;
+          },
+          {} as Record<string, string[]>,
+        );
+
+        if (Object.keys(parsedErrors).length > 0) {
+          setFieldErrors(parsedErrors);
+          toast.error("Please fix the highlighted fields.");
+          return;
+        }
+      }
+
       toast.error("Failed to add patient. Please try again.");
     }
   };
@@ -143,7 +187,7 @@ const AddPatientDialog: React.FC = () => {
                 Title<span className="text-danger">*</span>
               </label>
               <Select
-                value={formData.title ?? "none"}
+                value={formData.title ?? "MR"}
                 onValueChange={(value) => handleChange("title", value)}
                 required
               >
@@ -151,7 +195,6 @@ const AddPatientDialog: React.FC = () => {
                   <SelectValue placeholder="Select..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">Select...</SelectItem>
                   <SelectItem value="MR">Mr</SelectItem>
                   <SelectItem value="MRS">Mrs</SelectItem>
                   <SelectItem value="MS">Ms</SelectItem>
@@ -163,6 +206,11 @@ const AddPatientDialog: React.FC = () => {
                   <SelectItem value="DOCTOR">Doctor</SelectItem>
                 </SelectContent>
               </Select>
+              {fieldErrors.title?.map((error, idx) => (
+                <p key={idx} className="text-destructive text-xs">
+                  {error}
+                </p>
+              ))}
             </div>
 
             <div className="grid gap-2">
@@ -179,6 +227,11 @@ const AddPatientDialog: React.FC = () => {
                 required
                 placeholder="First name"
               />
+              {fieldErrors.first_name?.map((error, idx) => (
+                <p key={idx} className="text-destructive text-xs">
+                  {error}
+                </p>
+              ))}
             </div>
 
             <div className="grid gap-2">
@@ -195,6 +248,11 @@ const AddPatientDialog: React.FC = () => {
                 required
                 placeholder="Last name"
               />
+              {fieldErrors.last_name?.map((error, idx) => (
+                <p key={idx} className="text-destructive text-xs">
+                  {error}
+                </p>
+              ))}
             </div>
 
             <div className="grid gap-2">
@@ -212,22 +270,11 @@ const AddPatientDialog: React.FC = () => {
                 required
                 placeholder="Email address"
               />
-            </div>
-
-            <div className="grid gap-2">
-              <label
-                htmlFor="email"
-                className="text-foreground text-sm font-medium"
-              >
-                Email
-              </label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={handleInputChange("email")}
-                placeholder="Email address"
-              />
+              {fieldErrors.email?.map((error, idx) => (
+                <p key={idx} className="text-destructive text-xs">
+                  {error}
+                </p>
+              ))}
             </div>
 
             <div className="grid gap-2">
@@ -244,6 +291,7 @@ const AddPatientDialog: React.FC = () => {
                 onChange={handleInputChange("phone")}
                 placeholder="Phone number"
               />
+              {renderFieldError("phone")}
             </div>
 
             <div className="grid gap-2">
@@ -264,6 +312,7 @@ const AddPatientDialog: React.FC = () => {
                   Selected file: {formData.profile_image.name}
                 </p>
               ) : null}
+              {renderFieldError("profile_image")}
             </div>
 
             <div className="grid gap-2">
@@ -279,6 +328,7 @@ const AddPatientDialog: React.FC = () => {
                 value={formData.date_of_birth ?? ""}
                 onChange={handleInputChange("date_of_birth")}
               />
+              {renderFieldError("date_of_birth")}
             </div>
 
             <div className="grid gap-2">
@@ -302,6 +352,7 @@ const AddPatientDialog: React.FC = () => {
                   <SelectItem value="OTHER">Other</SelectItem>
                 </SelectContent>
               </Select>
+              {renderFieldError("gender")}
             </div>
 
             <div className="grid gap-2">
@@ -330,6 +381,7 @@ const AddPatientDialog: React.FC = () => {
                   <SelectItem value="O-">O-</SelectItem>
                 </SelectContent>
               </Select>
+              {renderFieldError("blood_group")}
             </div>
 
             <div className="grid gap-2">
@@ -345,6 +397,7 @@ const AddPatientDialog: React.FC = () => {
                 onChange={handleInputChange("suburb")}
                 placeholder="Suburb"
               />
+              {renderFieldError("suburb")}
             </div>
 
             <div className="grid gap-2">
@@ -360,6 +413,7 @@ const AddPatientDialog: React.FC = () => {
                 onChange={handleInputChange("postal_code")}
                 placeholder="Postal code"
               />
+              {renderFieldError("postal_code")}
             </div>
 
             <div className="grid gap-2 md:col-span-2">
@@ -375,6 +429,7 @@ const AddPatientDialog: React.FC = () => {
                 onChange={handleInputChange("address")}
                 placeholder="Address"
               />
+              {renderFieldError("address")}
             </div>
 
             <div className="grid gap-2 md:col-span-2">
@@ -390,6 +445,7 @@ const AddPatientDialog: React.FC = () => {
                 onChange={handleInputChange("emergency_contact_name")}
                 placeholder="Emergency contact name"
               />
+              {renderFieldError("emergency_contact_name")}
             </div>
 
             <div className="grid gap-2 md:col-span-2">
@@ -406,6 +462,7 @@ const AddPatientDialog: React.FC = () => {
                 onChange={handleInputChange("emergency_contact_phone")}
                 placeholder="Emergency contact phone"
               />
+              {renderFieldError("emergency_contact_phone")}
             </div>
 
             <div className="grid gap-2 md:col-span-2">
@@ -421,6 +478,7 @@ const AddPatientDialog: React.FC = () => {
                 onChange={handleInputChange("medical_history")}
                 placeholder="Medical history"
               />
+              {renderFieldError("medical_history")}
             </div>
           </div>
 
