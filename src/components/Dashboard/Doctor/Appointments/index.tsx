@@ -1,5 +1,5 @@
 import Breadcrumbs from "../../Common/Breadcrumbs/Breadcrumbs";
-import AppointmentList from "./AppointmentList/AppointmentList";
+import AppointmentList from "../../Common/Appointments/Appointments";
 
 const AppointmentsContainer: React.FC = () => {
   return (

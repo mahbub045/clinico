@@ -2,13 +2,6 @@ import { Edit, Plus, SearchIcon, Trash2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -19,29 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-const appointmentSummaries = [
-  {
-    label: "Today's Appointments",
-    value: "12",
-    description: "Patients scheduled for today",
-  },
-  {
-    label: "New Patients",
-    value: "4",
-    description: "First-time consultations",
-  },
-  {
-    label: "Completed",
-    value: "18",
-    description: "Visits finalized this week",
-  },
-  {
-    label: "Cancelled",
-    value: "2",
-    description: "Appointments that were cancelled",
-  },
-];
+import AppointmentsSummary from "../AppointmentsSummary/AppointmentsSummary";
 
 const appointments = [
   {
@@ -127,9 +98,6 @@ const AppointmentList: React.FC = () => {
       <section className="space-y-4">
         <div className="border-border bg-card flex flex-col gap-4 rounded-3xl border p-6 shadow-sm sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-2">
-            <p className="text-muted-foreground text-sm tracking-[0.2em] uppercase">
-              Doctor dashboard
-            </p>
             <h1 className="text-foreground text-3xl font-semibold tracking-tight">
               Appointments
             </h1>
@@ -158,28 +126,7 @@ const AppointmentList: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {appointmentSummaries.map((summary) => (
-            <Card
-              key={summary.label}
-              className="border-border rounded-3xl border p-4"
-            >
-              <CardHeader className="px-0 pb-2">
-                <CardTitle className="text-muted-foreground text-sm font-semibold tracking-[0.15em] uppercase">
-                  {summary.label}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="px-0 pt-2">
-                <p className="text-foreground text-3xl font-semibold tracking-tight">
-                  {summary.value}
-                </p>
-                <CardDescription className="text-muted-foreground mt-2 text-sm leading-6">
-                  {summary.description}
-                </CardDescription>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <AppointmentsSummary />
       </section>
 
       <section className="space-y-4">
