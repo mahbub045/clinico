@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/table";
 import { useGetPatientsQuery } from "@/redux/reducers/Common/Patients/PatientsApi";
 import { PatientRow, RawPatient } from "@/types/Common/Patients/PatientsType";
+import { formatChoiceFieldValue } from "../../../../../../utils/formatters";
 
 const formatAge = (dateOfBirth?: string | null) => {
   if (!dateOfBirth) return "-";
@@ -40,7 +41,7 @@ const formatAge = (dateOfBirth?: string | null) => {
 
 const normalizePatient = (patient: RawPatient): PatientRow => {
   const name = [
-    patient.user_title,
+    formatChoiceFieldValue(patient.user_title),
     patient.user_first_name,
     patient.user_last_name,
   ]
@@ -50,7 +51,7 @@ const normalizePatient = (patient: RawPatient): PatientRow => {
 
   return {
     patient_alias: patient.patient_alias,
-    name: name || patient.user_email || "Unknown patient",
+    name: name || "Unknown patient",
     age: formatAge(patient.date_of_birth),
     gender: patient.gender || "Unknown",
     lastVisit: patient.last_visit || "-",
@@ -142,7 +143,9 @@ const PatientList: React.FC = () => {
                     </div>
                   </TableCell>
                   <TableCell>{patient.age}</TableCell>
-                  <TableCell>{patient.gender}</TableCell>
+                  <TableCell>
+                    {formatChoiceFieldValue(patient.gender)}
+                  </TableCell>
                   <TableCell>{patient.lastVisit}</TableCell>
                   <TableCell className="text-right">
                     <div className="inline-flex items-center justify-end gap-2">
