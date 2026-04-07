@@ -21,18 +21,12 @@ import {
 } from "@/components/ui/table";
 import { useGetAppointmentsQuery } from "@/redux/reducers/Common/Appointments/AppointmentsApi";
 import { Appointment } from "@/types/Common/Appointments/AppointmentsType";
-import {
-  Edit,
-  Eye,
-  LoaderPinwheel,
-  Plus,
-  SearchIcon,
-  Trash2,
-} from "lucide-react";
+import { Edit, Eye, LoaderPinwheel, SearchIcon, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
 import { formatChoiceFieldValue } from "../../../../../../utils/formatters";
+import AddAppointmentDialog from "./Dialogs/AddAppointmentDialog";
 import DeleteAppointmentDialog from "./Dialogs/DeleteAppointmentDialog";
 
 const statusVariant = (status: string) => {
@@ -107,10 +101,7 @@ const AppointmentList: React.FC = () => {
                 }}
               />
             </div>
-            <Button variant="secondary" className="justify-self-end">
-              <Plus className="size-4" />
-              New appointment
-            </Button>
+            <AddAppointmentDialog />
           </div>
 
           <Table className="border-border bg-card w-full border text-sm shadow-sm">
