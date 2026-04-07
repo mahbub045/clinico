@@ -4,6 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
   Table,
   TableBody,
   TableCell,
@@ -14,7 +22,7 @@ import {
 import { useGetAppointmentsQuery } from "@/redux/reducers/Common/Appointments/AppointmentsApi";
 import { Appointment } from "@/types/Common/Appointments/AppointmentsType";
 import { Edit, LoaderPinwheel, Plus, SearchIcon, Trash2 } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 const statusVariant = (status: string) => {
   switch (status?.toUpperCase()) {
@@ -32,11 +40,14 @@ const statusVariant = (status: string) => {
 };
 
 const AppointmentList: React.FC = () => {
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+
   const {
     data: appointmentsData,
     isLoading,
     error,
-  } = useGetAppointmentsQuery(undefined);
+  } = useGetAppointmentsQuery({ page, search });
 
   const appointments = useMemo<Appointment[]>(() => {
     if (!appointmentsData) return [];
@@ -47,6 +58,14 @@ const AppointmentList: React.FC = () => {
     }
     return [];
   }, [appointmentsData]);
+
+  const totalPages = Math.max(1, appointmentsData?.total_pages ?? 1);
+  const currentPage = appointmentsData?.current_page ?? page;
+  const totalItems = appointmentsData?.total_items ?? appointments.length;
+  const paginationPages = useMemo(
+    () => Array.from({ length: totalPages }, (_, index) => index + 1),
+    [totalPages],
+  );
 
   return (
     <div className="space-y-8">
@@ -67,6 +86,11 @@ const AppointmentList: React.FC = () => {
                 id="appointment-search"
                 placeholder="Search appointments"
                 className="w-full pl-10"
+                value={search}
+                onChange={(event) => {
+                  setSearch(event.target.value);
+                  setPage(1);
+                }}
               />
             </div>
             <Button variant="secondary" className="justify-self-end">
@@ -163,6 +187,56 @@ const AppointmentList: React.FC = () => {
               )}
             </TableBody>
           </Table>
+
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-muted-foreground text-sm">
+              Total appointments: {totalItems}.
+            </p>
+            {totalPages > 1 && (
+              <Pagination className="w-full sm:w-auto">
+                <PaginationPrevious
+                  href="#"
+                  className={
+                    currentPage <= 1
+                      ? "pointer-events-none opacity-50"
+                      : undefined
+                  }
+                  onClick={(event) => {
+                    event.preventDefault();
+                    if (currentPage > 1) setPage(currentPage - 1);
+                  }}
+                />
+                <PaginationContent>
+                  {paginationPages.map((pageNumber) => (
+                    <PaginationItem key={pageNumber}>
+                      <PaginationLink
+                        href="#"
+                        isActive={pageNumber === currentPage}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          setPage(pageNumber);
+                        }}
+                      >
+                        {pageNumber}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                </PaginationContent>
+                <PaginationNext
+                  href="#"
+                  className={
+                    currentPage >= totalPages
+                      ? "pointer-events-none opacity-50"
+                      : undefined
+                  }
+                  onClick={(event) => {
+                    event.preventDefault();
+                    if (currentPage < totalPages) setPage(currentPage + 1);
+                  }}
+                />
+              </Pagination>
+            )}
+          </div>
         </section>
       </Card>
     </div>

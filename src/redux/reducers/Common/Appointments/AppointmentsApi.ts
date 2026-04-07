@@ -3,9 +3,10 @@ import { BaseApi } from "@/redux/api/BaseApi";
 export const AppointmentsApi = BaseApi.injectEndpoints({
   endpoints: (build) => ({
     getAppointments: build.query({
-      query: () => ({
+      query: (params) => ({
         url: "/api/appointments/",
         method: "GET",
+        params: params ?? {},
       }),
       providesTags: ["Appointments"],
     }),
