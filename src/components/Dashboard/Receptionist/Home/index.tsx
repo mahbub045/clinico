@@ -1,4 +1,66 @@
+import type { Appointment } from "@/types/Common/Appointments/AppointmentsType";
 import Breadcrumbs from "../../Common/Breadcrumbs/Breadcrumbs";
+
+import BillingSummary from "./components/BillingSummary";
+import QuickActions from "./components/QuickActions";
+import SummaryCards from "./components/SummaryCards";
+import TodayAppointmentsTable from "./components/TodayAppointmentsTable";
+import TodaysActivityChart from "./components/TodaysActivityChart";
+
+const activityData = [
+  { hour: "09 AM", appointments: 2 },
+  { hour: "10 AM", appointments: 6 },
+  { hour: "11 AM", appointments: 4 },
+  { hour: "12 PM", appointments: 3 },
+  { hour: "01 PM", appointments: 5 },
+  { hour: "02 PM", appointments: 2 },
+  { hour: "03 PM", appointments: 4 },
+];
+
+const todayAppointmentsMock: Appointment[] = [
+  {
+    id: 1,
+    appointment_time: "09:30",
+    patient: { full_name: "Rafia Akter" },
+    doctor: { full_name: "Dr. Hasan" },
+    status: "CONFIRMED",
+  },
+  {
+    id: 2,
+    appointment_time: "10:15",
+    patient: { full_name: "Mehedi Hasan" },
+    doctor: { full_name: "Dr. Sultana" },
+    status: "PENDING",
+  },
+  {
+    id: 3,
+    appointment_time: "11:00",
+    patient: { full_name: "Nusrat Jahan" },
+    doctor: { full_name: "Dr. Rahman" },
+    status: "CONFIRMED",
+  },
+  {
+    id: 4,
+    appointment_time: "12:20",
+    patient: { full_name: "Tanvir Ahmed" },
+    doctor: { full_name: "Dr. Karim" },
+    status: "CANCELLED",
+  },
+  {
+    id: 5,
+    appointment_time: "01:10",
+    patient: { full_name: "Sadia Islam" },
+    doctor: { full_name: "Dr. Noor" },
+    status: "COMPLETED",
+  },
+  {
+    id: 6,
+    appointment_time: "02:45",
+    patient: { full_name: "Fahim Chowdhury" },
+    doctor: { full_name: "Dr. Ahmed" },
+    status: "PENDING",
+  },
+];
 
 const ReceptionistHomeContainer = () => {
   return (
@@ -25,6 +87,30 @@ const ReceptionistHomeContainer = () => {
               </p>
             </div>
           </div>
+        </div>
+
+        <SummaryCards
+          values={{
+            totalPatientsToday: 128,
+            appointmentsBooked: 42,
+            walkIns: 9,
+            pendingBills: 13,
+          }}
+        />
+
+        <div className="grid gap-6 lg:grid-cols-[1.35fr_0.65fr]">
+          <TodaysActivityChart data={activityData} loading={false} />
+          <QuickActions />
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-[1.35fr_0.65fr]">
+          <TodayAppointmentsTable
+            appointments={todayAppointmentsMock}
+            loading={false}
+          />
+          <BillingSummary
+            values={{ totalRevenue: 42500, paid: 36150, due: 6350 }}
+          />
         </div>
       </div>
     </>
