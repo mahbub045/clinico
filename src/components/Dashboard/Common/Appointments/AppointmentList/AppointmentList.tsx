@@ -1,5 +1,4 @@
-import { Edit, Plus, SearchIcon, Trash2 } from "lucide-react";
-
+"use client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -7,85 +6,25 @@ import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-const appointments = [
-  {
-    id: "APT-001",
-    patient: "Maya Patel",
-    time: "09:30 AM",
-    date: "Apr 4, 2026",
-    department: "Cardiology",
-    status: "Confirmed",
-    room: "B12",
-    note: "Routine heart check",
-  },
-  {
-    id: "APT-002",
-    patient: "Noah Thompson",
-    time: "10:15 AM",
-    date: "Apr 4, 2026",
-    department: "Dermatology",
-    status: "Pending",
-    room: "A09",
-    note: "Follow-up on rash",
-  },
-  {
-    id: "APT-003",
-    patient: "Sara Lee",
-    time: "11:00 AM",
-    date: "Apr 4, 2026",
-    department: "Neurology",
-    status: "Confirmed",
-    room: "C03",
-    note: "Migraine consultation",
-  },
-  {
-    id: "APT-004",
-    patient: "Ethan Brooks",
-    time: "12:30 PM",
-    date: "Apr 4, 2026",
-    department: "General",
-    status: "Completed",
-    room: "B07",
-    note: "Annual physical exam",
-  },
-  {
-    id: "APT-005",
-    patient: "Lina Gomez",
-    time: "02:00 PM",
-    date: "Apr 4, 2026",
-    department: "Pediatrics",
-    status: "Confirmed",
-    room: "D01",
-    note: "Vaccination review",
-  },
-  {
-    id: "APT-006",
-    patient: "Oscar Wu",
-    time: "03:45 PM",
-    date: "Apr 4, 2026",
-    department: "Orthopedics",
-    status: "Cancelled",
-    room: "A11",
-    note: "Rescheduled for next week",
-  },
-];
+import { useGetAppointmentsQuery } from "@/redux/reducers/Common/Appointments/AppointmentsApi";
+import { Appointment } from "@/types/Common/Appointments/AppointmentsType";
+import { Edit, LoaderPinwheel, Plus, SearchIcon, Trash2 } from "lucide-react";
+import { useMemo } from "react";
 
 const statusVariant = (status: string) => {
-  switch (status) {
-    case "Confirmed":
+  switch (status?.toUpperCase()) {
+    case "CONFIRMED":
       return "default";
-    case "Pending":
+    case "PENDING":
       return "secondary";
-    case "Completed":
+    case "COMPLETED":
       return "success";
-    case "Cancelled":
+    case "CANCELLED":
       return "destructive";
     default:
       return "default";
@@ -93,6 +32,22 @@ const statusVariant = (status: string) => {
 };
 
 const AppointmentList: React.FC = () => {
+  const {
+    data: appointmentsData,
+    isLoading,
+    error,
+  } = useGetAppointmentsQuery(undefined);
+
+  const appointments = useMemo<Appointment[]>(() => {
+    if (!appointmentsData) return [];
+    if (Array.isArray(appointmentsData))
+      return appointmentsData as Appointment[];
+    if (appointmentsData.results && Array.isArray(appointmentsData.results)) {
+      return appointmentsData.results as Appointment[];
+    }
+    return [];
+  }, [appointmentsData]);
+
   return (
     <div className="space-y-8">
       <Card className="rounded-md p-6 shadow-sm">
@@ -124,10 +79,10 @@ const AppointmentList: React.FC = () => {
             <TableHeader>
               <TableRow>
                 <TableHead className="text-primary">Patient</TableHead>
+                <TableHead className="text-primary">Doctor</TableHead>
                 <TableHead className="text-primary">Date / Time</TableHead>
-                <TableHead className="text-primary">Department</TableHead>
                 <TableHead className="text-primary">Status</TableHead>
-                <TableHead className="text-primary">Room</TableHead>
+                <TableHead className="text-primary">Created by</TableHead>
                 <TableHead className="text-primary truncate">Notes</TableHead>
                 <TableHead className="text-primary text-right">
                   Actions
@@ -135,55 +90,78 @@ const AppointmentList: React.FC = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {appointments.map((appointment) => (
-                <TableRow key={appointment.id}>
-                  <TableCell className="text-foreground font-medium">
-                    {appointment.patient}
-                  </TableCell>
-                  <TableCell>
-                    <div className="space-y-1">
-                      <p className="text-foreground font-medium">
-                        {appointment.time}
-                      </p>
-                      <p className="text-muted-foreground text-xs">
-                        {appointment.date}
-                      </p>
-                    </div>
-                  </TableCell>
-                  <TableCell>{appointment.department}</TableCell>
-                  <TableCell>
-                    <Badge variant={statusVariant(appointment.status)}>
-                      {appointment.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{appointment.room}</TableCell>
-                  <TableCell className="text-muted-foreground text-sm">
-                    {appointment.note}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="inline-flex items-center justify-end gap-2">
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        aria-label={`Edit appointment for ${appointment.patient}`}
-                      >
-                        <Edit />
-                      </Button>
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        aria-label={`Delete appointment for ${appointment.patient}`}
-                      >
-                        <Trash2 />
-                      </Button>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={7}
+                    className="text-muted-foreground py-10 text-center text-sm"
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      <LoaderPinwheel className="text-primary animate-spin" />
                     </div>
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : appointments.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={7}
+                    className="text-muted-foreground py-10 text-center text-sm"
+                  >
+                    No appointments available.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                appointments.map((appointment) => (
+                  <TableRow key={appointment.id}>
+                    <TableCell className="text-foreground font-medium">
+                      {appointment.patient?.full_name ?? "Unknown patient"}
+                    </TableCell>
+                    <TableCell>
+                      {appointment.doctor?.full_name ?? "Unknown doctor"}
+                    </TableCell>
+                    <TableCell>
+                      <div className="space-y-1">
+                        <p className="text-foreground font-medium">
+                          {appointment.appointment_time ?? "-"}
+                        </p>
+                        <p className="text-muted-foreground text-xs">
+                          {appointment.appointment_date ?? "-"}
+                        </p>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={statusVariant(appointment.status ?? "")}>
+                        {appointment.status ? appointment.status : "Unknown"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {appointment.created_by_details?.full_name ?? "System"}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground text-sm">
+                      {appointment.notes || appointment.reason || "-"}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="inline-flex items-center justify-end gap-2">
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          aria-label={`Edit appointment for ${appointment.patient?.full_name ?? "patient"}`}
+                        >
+                          <Edit />
+                        </Button>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          aria-label={`Delete appointment for ${appointment.patient?.full_name ?? "patient"}`}
+                        >
+                          <Trash2 />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
-            <TableCaption>
-              All dummy appointments are shown for design preview.
-            </TableCaption>
           </Table>
         </section>
       </Card>
