@@ -3,6 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useGetUserInfoQuery } from "@/redux/reducers/Common/UserInfo/UserInfoApi";
+import { User } from "lucide-react";
 
 export function Navbar() {
   const { data: userInfo } = useGetUserInfoQuery(undefined);
@@ -13,7 +14,7 @@ export function Navbar() {
   const initials = userInfo
     ? `${userInfo.first_name?.[0] || ""}${userInfo.last_name?.[0] || ""}`.toUpperCase()
     : "UN";
-  const avatarSrc = userInfo?.profile_image || "/window.svg";
+  const avatarSrc = userInfo?.profile_image || <User />;
 
   return (
     <header className="bg-background sticky top-0 z-40 flex h-12 items-center gap-3 border-b px-4">

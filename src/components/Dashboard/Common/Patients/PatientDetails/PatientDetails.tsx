@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { useGetPatientDetailsQuery } from "@/redux/reducers/Common/Patients/PatientsApi";
 import { Edit, LoaderPinwheel } from "lucide-react";
 import { useParams } from "next/navigation";
-import { formatChoiceFieldValue } from "../../../../../../../utils/formatters";
-import EditPatietDialog from "../Dialogs/EditPatietDialog";
+import { formatChoiceFieldValue } from "../../../../../../utils/formatters";
+import EditPatietDialog from "../PatientList/Dialogs/EditPatietDialog";
 
 const PatientDetails: React.FC = () => {
   const { alias } = useParams() as { alias?: string };
