@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  BriefcaseMedical,
   Home,
   LogOutIcon,
   StethoscopeIcon,
@@ -31,9 +32,21 @@ const navItemsByRole: Record<
   string,
   ReadonlyArray<{ href: string; label: string; icon: LucideIcon }>
 > = {
-  ADMIN: [{ href: "/dashboard/admin", label: "Home", icon: Home }],
+  ADMIN: [
+    { href: "/dashboard/admin", label: "Home", icon: Home },
+    {
+      href: "/dashboard/admin/doctors",
+      label: "Doctors",
+      icon: StethoscopeIcon,
+    },
+  ],
   RECEPTIONIST: [
-    { href: "/dashboard/receptionist", label: "Home", icon: Users },
+    { href: "/dashboard/receptionist", label: "Home", icon: Home },
+    {
+      href: "/dashboard/receptionist/doctors",
+      label: "Doctors",
+      icon: StethoscopeIcon,
+    },
     {
       href: "/dashboard/receptionist/patients",
       label: "Patients",
@@ -42,16 +55,21 @@ const navItemsByRole: Record<
     {
       href: "/dashboard/receptionist/appointments",
       label: "Appointments",
-      icon: StethoscopeIcon,
+      icon: BriefcaseMedical,
     },
   ],
   DOCTOR: [
     { href: "/dashboard/doctor", label: "Home", icon: Home },
+    {
+      href: "/dashboard/doctor/doctors",
+      label: "Doctors",
+      icon: StethoscopeIcon,
+    },
     { href: "/dashboard/doctor/patients", label: "Patients", icon: Users },
     {
       href: "/dashboard/doctor/appointments",
       label: "Appointments",
-      icon: StethoscopeIcon,
+      icon: BriefcaseMedical,
     },
   ],
 };
