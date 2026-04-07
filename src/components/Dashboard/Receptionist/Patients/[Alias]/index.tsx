@@ -1,5 +1,5 @@
 import Breadcrumbs from "@/components/Dashboard/Common/Breadcrumbs/Breadcrumbs";
-import PatientDetails from "@/components/Dashboard/Common/Patients/PatientList/PatientDetails/PatientDetails";
+import PatientDetails from "@/components/Dashboard/Common/Patients/PatientDetails/PatientDetails";
 
 const PatientDetailsContainer: React.FC = () => {
   return (

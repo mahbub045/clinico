@@ -135,7 +135,7 @@ const AppointmentList: React.FC = () => {
                 <TableRow>
                   <TableCell
                     colSpan={7}
-                    className="text-muted-foreground py-10 text-center text-sm"
+                    className="text-danger py-10 text-center text-sm"
                   >
                     No appointments available.
                   </TableCell>

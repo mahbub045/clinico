@@ -150,6 +150,15 @@ const PatientList: React.FC = () => {
                   </div>
                 </TableCell>
               </TableRow>
+            ) : normalizedPatients.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={7}
+                  className="text-danger py-10 text-center"
+                >
+                  No patients found.
+                </TableCell>
+              </TableRow>
             ) : (
               normalizedPatients.map((patient, index) => (
                 <TableRow key={patient.alias ?? patient.email ?? index}>
