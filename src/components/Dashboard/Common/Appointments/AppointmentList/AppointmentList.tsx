@@ -23,6 +23,7 @@ import { useGetAppointmentsQuery } from "@/redux/reducers/Common/Appointments/Ap
 import { Appointment } from "@/types/Common/Appointments/AppointmentsType";
 import { Edit, LoaderPinwheel, Plus, SearchIcon, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
+import DeleteAppointmentDialog from "./Dialogs/DeleteAppointmentDialog";
 
 const statusVariant = (status: string) => {
   switch (status?.toUpperCase()) {
@@ -173,13 +174,18 @@ const AppointmentList: React.FC = () => {
                         >
                           <Edit />
                         </Button>
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          aria-label={`Delete appointment for ${appointment.patient?.full_name ?? "patient"}`}
+                        <DeleteAppointmentDialog
+                          alias={appointment.alias}
+                          appointmentLabel={appointment.patient?.full_name}
                         >
-                          <Trash2 />
-                        </Button>
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            aria-label={`Delete appointment for ${appointment.patient?.full_name ?? "patient"}`}
+                          >
+                            <Trash2 />
+                          </Button>
+                        </DeleteAppointmentDialog>
                       </div>
                     </TableCell>
                   </TableRow>

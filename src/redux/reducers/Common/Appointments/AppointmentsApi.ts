@@ -11,8 +11,8 @@ export const AppointmentsApi = BaseApi.injectEndpoints({
       providesTags: ["Appointments"],
     }),
     getAppointmentDetails: build.query({
-      query: (id) => ({
-        url: `/api/appointments/${id}/`,
+      query: (alias) => ({
+        url: `/api/appointments/${alias}/`,
         method: "GET",
       }),
       providesTags: ["Appointments"],
@@ -26,16 +26,16 @@ export const AppointmentsApi = BaseApi.injectEndpoints({
       invalidatesTags: ["Appointments"],
     }),
     updateAppointment: build.mutation({
-      query: ({ id, ...appointmentData }) => ({
-        url: `/api/appointments/${id}/`,
+      query: ({ alias, ...appointmentData }) => ({
+        url: `/api/appointments/${alias}/`,
         method: "PATCH",
         body: appointmentData,
       }),
       invalidatesTags: ["Appointments"],
     }),
     deleteAppointment: build.mutation({
-      query: (id) => ({
-        url: `/api/appointments/${id}/`,
+      query: (alias) => ({
+        url: `/api/appointments/${alias}/`,
         method: "DELETE",
       }),
       invalidatesTags: ["Appointments"],
