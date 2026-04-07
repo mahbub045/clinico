@@ -39,16 +39,6 @@ const navItemsByRole: Record<
       label: "Doctors",
       icon: StethoscopeIcon,
     },
-    {
-      href: "/dashboard/admin/patients",
-      label: "Patients",
-      icon: Users,
-    },
-    {
-      href: "/dashboard/admin/appointments",
-      label: "Appointments",
-      icon: BriefcaseMedical,
-    },
   ],
   RECEPTIONIST: [
     { href: "/dashboard/receptionist", label: "Home", icon: Home },
