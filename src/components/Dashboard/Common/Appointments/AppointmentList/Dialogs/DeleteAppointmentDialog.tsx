@@ -17,8 +17,8 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 
 interface DeleteAppointmentDialogProps {
-  alias: string;
-  appointmentLabel?: string;
+  alias?: string | null;
+  appointmentLabel?: string | null;
   children?: React.ReactNode;
 }
 
@@ -31,6 +31,13 @@ const DeleteAppointmentDialog: React.FC<DeleteAppointmentDialogProps> = ({
   const [deleteAppointment, { isLoading }] = useDeleteAppointmentMutation();
 
   const handleDelete = async () => {
+    if (!alias) {
+      toast.error(
+        "Unable to delete appointment. Missing appointment identifier.",
+      );
+      return;
+    }
+
     try {
       await deleteAppointment(alias).unwrap();
       toast.success("Appointment deleted successfully.");

@@ -22,7 +22,9 @@ import {
 import { useGetAppointmentsQuery } from "@/redux/reducers/Common/Appointments/AppointmentsApi";
 import { Appointment } from "@/types/Common/Appointments/AppointmentsType";
 import { Edit, LoaderPinwheel, Plus, SearchIcon, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { useMemo, useState } from "react";
+import { formatChoiceFieldValue } from "../../../../../../utils/formatters";
 import DeleteAppointmentDialog from "./Dialogs/DeleteAppointmentDialog";
 
 const statusVariant = (status: string) => {
@@ -139,7 +141,12 @@ const AppointmentList: React.FC = () => {
                 appointments.map((appointment) => (
                   <TableRow key={appointment.id}>
                     <TableCell className="text-foreground font-medium">
-                      {appointment.patient?.full_name ?? "Unknown patient"}
+                      <Link
+                        href={`/dashboard/receptionist/appointments/${appointment.alias}`}
+                        className="hover:underline text-primary"
+                      >
+                        {appointment.patient?.full_name ?? "Unknown patient"}
+                      </Link>
                     </TableCell>
                     <TableCell>
                       {appointment.doctor?.full_name ?? "Unknown doctor"}
@@ -156,7 +163,9 @@ const AppointmentList: React.FC = () => {
                     </TableCell>
                     <TableCell>
                       <Badge variant={statusVariant(appointment.status ?? "")}>
-                        {appointment.status ? appointment.status : "Unknown"}
+                        {appointment.status
+                          ? formatChoiceFieldValue(appointment.status)
+                          : "Unknown"}
                       </Badge>
                     </TableCell>
                     <TableCell>
