@@ -21,7 +21,14 @@ import {
 } from "@/components/ui/table";
 import { useGetAppointmentsQuery } from "@/redux/reducers/Common/Appointments/AppointmentsApi";
 import { Appointment } from "@/types/Common/Appointments/AppointmentsType";
-import { Edit, LoaderPinwheel, Plus, SearchIcon, Trash2 } from "lucide-react";
+import {
+  Edit,
+  Eye,
+  LoaderPinwheel,
+  Plus,
+  SearchIcon,
+  Trash2,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -180,6 +187,18 @@ const AppointmentList: React.FC = () => {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="inline-flex items-center justify-end gap-2">
+                        <Link
+                          href={`/dashboard/${dashboardRole}/appointments/${appointment.alias}`}
+                          className="text-primary hover:underline"
+                        >
+                          <Button
+                            variant="default"
+                            size="sm"
+                            aria-label={`View details for appointment with ${appointment.patient?.full_name ?? "patient"}`}
+                          >
+                            <Eye />
+                          </Button>
+                        </Link>
                         <Button
                           variant="secondary"
                           size="sm"
