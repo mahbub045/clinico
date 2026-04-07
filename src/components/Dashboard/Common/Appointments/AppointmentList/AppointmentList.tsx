@@ -28,6 +28,7 @@ import { useMemo, useState } from "react";
 import { formatChoiceFieldValue } from "../../../../../../utils/formatters";
 import AddAppointmentDialog from "./Dialogs/AddAppointmentDialog";
 import DeleteAppointmentDialog from "./Dialogs/DeleteAppointmentDialog";
+import EditAppointmentDialog from "./Dialogs/EditAppointmentDialog";
 
 const statusVariant = (status: string) => {
   switch (status?.toUpperCase()) {
@@ -190,13 +191,32 @@ const AppointmentList: React.FC = () => {
                             <Eye />
                           </Button>
                         </Link>
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          aria-label={`Edit appointment for ${appointment.patient?.full_name ?? "patient"}`}
+                        <EditAppointmentDialog
+                          alias={appointment.alias ?? ""}
+                          initialValues={{
+                            patient_id: "",
+                            doctor_id: "",
+                            appointment_date:
+                              appointment.appointment_date ?? "",
+                            appointment_time:
+                              appointment.appointment_time ?? "",
+                            status: appointment.status ?? "PENDING",
+                            reason: appointment.reason ?? "",
+                            notes: appointment.notes ?? "",
+                            patient_label:
+                              appointment.patient?.full_name ?? undefined,
+                            doctor_label:
+                              appointment.doctor?.full_name ?? undefined,
+                          }}
                         >
-                          <Edit />
-                        </Button>
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            aria-label={`Edit appointment for ${appointment.patient?.full_name ?? "patient"}`}
+                          >
+                            <Edit />
+                          </Button>
+                        </EditAppointmentDialog>
                         <DeleteAppointmentDialog
                           alias={appointment.alias}
                           appointmentLabel={appointment.patient?.full_name}
