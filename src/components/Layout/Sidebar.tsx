@@ -38,6 +38,11 @@ const navItemsByRole: Record<
       label: "Doctors",
       icon: StethoscopeIcon,
     },
+    {
+      href: "/dashboard/admin/receptionists",
+      label: "Receptionists",
+      icon: Users,
+    },
   ],
   RECEPTIONIST: [
     { href: "/dashboard/receptionist", label: "Home", icon: Home },

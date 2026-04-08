@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useGetUserInfoQuery } from "@/redux/reducers/Common/UserInfo/UserInfoApi";
-import { LogOutIcon, User } from "lucide-react";
+import { ChevronDown, LogOutIcon, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { formatChoiceFieldValue } from "../../../utils/formatters";
@@ -20,7 +20,11 @@ export function Navbar() {
   const { data: userInfo } = useGetUserInfoQuery(undefined);
 
   const displayName =
-    [userInfo?.title, userInfo?.first_name, userInfo?.last_name]
+    [
+      formatChoiceFieldValue(userInfo?.title),
+      userInfo?.first_name,
+      userInfo?.last_name,
+    ]
       .filter(Boolean)
       .join(" ") || "User Name";
 
@@ -66,8 +70,9 @@ export function Navbar() {
                 <AvatarImage src={avatarSrc} alt={displayName} />
                 <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
-              <div className="text-primary text-sm leading-none font-medium">
+              <div className="text-primary flex items-center text-sm leading-none font-medium">
                 {displayName}
+                <ChevronDown size="16" />
               </div>
             </button>
           </DropdownMenuTrigger>
