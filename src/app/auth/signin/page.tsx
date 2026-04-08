@@ -157,25 +157,25 @@ const SignInContent: React.FC = () => {
         <div className="bg-primary/10 absolute bottom-12 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative mx-auto flex min-h-screen items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+      <div className="relative mx-auto flex min-h-screen items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
         <div className="border-border/70 w-full max-w-6xl overflow-hidden rounded-[2rem] border bg-white/95 shadow-[0_48px_120px_-48px_rgba(15,23,42,0.35)] backdrop-blur-xl dark:border-slate-800/70 dark:bg-slate-950/90">
-          <div className="grid gap-0 sm:grid-cols-[1.45fr_1fr]">
-            <section className="border-border/70 relative overflow-hidden rounded-[2rem] border-b bg-slate-50/90 px-8 py-12 sm:border-r sm:border-b-0 sm:px-14 sm:py-16 dark:bg-slate-900/95">
+          <div className="grid gap-0 lg:grid-cols-[1.45fr_1fr]">
+            <section className="border-border/70 relative overflow-hidden rounded-[2rem] border-b bg-slate-50/90 px-6 py-10 md:px-10 md:py-12 lg:border-r lg:border-b-0 lg:px-14 lg:py-16 dark:bg-slate-900/95">
               <div className="absolute inset-x-0 top-0 h-36 bg-linear-to-b from-white/60 to-transparent" />
               <div className="relative z-10">
                 <span className="border-primary/20 bg-primary/5 text-primary shadow-primary/5 inline-flex rounded-full border px-4 py-1 text-xs font-semibold tracking-[0.5em] uppercase shadow-sm">
                   Clinico sign in
                 </span>
-                <h1 className="mt-8 text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl dark:text-white">
+                <h1 className="mt-6 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl lg:mt-8 lg:text-6xl dark:text-white">
                   Welcome back.
                 </h1>
-                <p className="mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg dark:text-slate-300">
+                <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600 sm:mt-6 sm:text-lg sm:leading-8 dark:text-slate-300">
                   Access your clinic dashboard securely with your account.
                   Manage appointments, patient records, and daily operations in
                   one place.
                 </p>
 
-                <div className="mt-10 grid gap-4 sm:grid-cols-3">
+                <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:mt-10 lg:grid-cols-3">
                   <div className="border-primary/15 bg-primary/5 shadow-primary/5 dark:border-primary/20 dark:bg-primary/10 rounded-[1.5rem] border px-5 py-4 text-sm text-slate-700 shadow-sm dark:text-slate-200">
                     <div className="text-primary flex items-center gap-2">
                       <Mail className="size-4" />
@@ -201,7 +201,7 @@ const SignInContent: React.FC = () => {
               </div>
             </section>
 
-            <section className="space-y-6 bg-white px-8 py-10 sm:px-10 sm:py-14 dark:bg-slate-950">
+            <section className="space-y-6 bg-white px-6 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-14 dark:bg-slate-950">
               <div className="border-border/70 rounded-[2rem] border bg-slate-50/80 p-6 shadow-sm shadow-slate-900/5 dark:border-slate-800/80 dark:bg-slate-900/95">
                 <p className="text-foreground text-sm font-semibold">
                   Sign in to your account

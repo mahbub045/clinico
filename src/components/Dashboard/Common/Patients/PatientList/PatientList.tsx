@@ -113,8 +113,8 @@ const PatientList: React.FC = () => {
   return (
     <div className="card bg-card space-y-10 rounded-md p-6 shadow-sm">
       <section className="space-y-4">
-        <div className="grid w-full grid-cols-[1fr_auto] gap-3">
-          <div className="relative w-sm">
+        <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-[1fr_auto] sm:items-center">
+          <div className="relative w-full sm:max-w-sm">
             <SearchIcon className="text-primary pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
             <Input
               id="patient-search"
@@ -127,136 +127,142 @@ const PatientList: React.FC = () => {
               className="w-full pl-10"
             />
           </div>
-          <AddPatientDialog />
+          <div className="w-full sm:w-auto">
+            <AddPatientDialog />
+          </div>
         </div>
-        <Table className="bg-card w-full border text-sm shadow-sm">
-          <TableHeader>
-            <TableRow>
-              <TableHead className="text-primary">Name</TableHead>
-              <TableHead className="text-primary">Age</TableHead>
-              <TableHead className="text-primary">Gender</TableHead>
-              <TableHead className="text-primary">Email</TableHead>
-              <TableHead className="text-primary">Phone</TableHead>
-              <TableHead className="text-primary">Last visit</TableHead>
-              <TableHead className="text-primary text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading ? (
+        <div className="w-full overflow-x-auto">
+          <Table className="bg-card min-w-225 border text-sm shadow-sm">
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={7} className="py-10 text-center">
-                  <div className="text-muted-foreground flex items-center justify-center gap-2">
-                    <LoaderPinwheel className="text-primary animate-spin" />
-                  </div>
-                </TableCell>
+                <TableHead className="text-primary">Name</TableHead>
+                <TableHead className="text-primary">Age</TableHead>
+                <TableHead className="text-primary">Gender</TableHead>
+                <TableHead className="text-primary">Email</TableHead>
+                <TableHead className="text-primary">Phone</TableHead>
+                <TableHead className="text-primary">Last visit</TableHead>
+                <TableHead className="text-primary text-right">
+                  Actions
+                </TableHead>
               </TableRow>
-            ) : normalizedPatients.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={7}
-                  className="text-danger py-10 text-center"
-                >
-                  No patients found.
-                </TableCell>
-              </TableRow>
-            ) : (
-              normalizedPatients.map((patient, index) => (
-                <TableRow key={patient.alias ?? patient.email ?? index}>
-                  <TableCell className="text-foreground font-medium">
-                    <div className="flex items-center gap-3">
-                      <span className="bg-primary/10 text-primary inline-flex h-9 w-9 items-center justify-center rounded-2xl">
-                        <User className="size-4" />
-                      </span>
-                      <div className="space-y-0.5">
-                        <Link
-                          href={`/dashboard/${dashboardRole}/patients/${patient.alias}`}
-                          className="text-primary hover:underline"
-                        >
-                          {patient.name}
-                        </Link>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {patient.age !== "-" ? (
-                      patient.age
-                    ) : (
-                      <small className="text-muted-foreground">
-                        Not provided
-                      </small>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {formatChoiceFieldValue(patient.gender || "") ? (
-                      formatChoiceFieldValue(patient.gender || "")
-                    ) : (
-                      <small className="text-muted-foreground">
-                        Not specified
-                      </small>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {patient.email ? (
-                      patient.email
-                    ) : (
-                      <small className="text-muted-foreground">
-                        Not provided
-                      </small>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {patient.phone ? (
-                      patient.phone
-                    ) : (
-                      <small className="text-muted-foreground">
-                        Not provided
-                      </small>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {patient.last_visit !== "-" ? (
-                      patient.last_visit
-                    ) : (
-                      <small className="text-muted-foreground">
-                        Not provided
-                      </small>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="inline-flex items-center justify-end gap-2">
-                      <Button asChild variant="default" size="sm">
-                        <Link
-                          href={`/dashboard/${dashboardRole}/patients/${patient.alias}`}
-                        >
-                          <Eye />
-                        </Link>
-                      </Button>
-                      <EditPatietDialog
-                        alias={patient.alias ?? ""}
-                        initialValues={
-                          (patient as RawPatient &
-                            Partial<AddPatientPayload>) ?? {}
-                        }
-                      >
-                        <Button variant="secondary" size="sm">
-                          <Edit />
-                        </Button>
-                      </EditPatietDialog>
-                      <DeletePatientDialog
-                        alias={patient.alias ?? ""}
-                        patientName={patient.name || "Not provided"}
-                      >
-                        <Button variant="danger" size="sm">
-                          <Trash />
-                        </Button>
-                      </DeletePatientDialog>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="py-10 text-center">
+                    <div className="text-muted-foreground flex items-center justify-center gap-2">
+                      <LoaderPinwheel className="text-primary animate-spin" />
                     </div>
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : normalizedPatients.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={7}
+                    className="text-danger py-10 text-center"
+                  >
+                    No patients found.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                normalizedPatients.map((patient, index) => (
+                  <TableRow key={patient.alias ?? patient.email ?? index}>
+                    <TableCell className="text-foreground min-w-60 font-medium">
+                      <div className="flex items-center gap-3">
+                        <span className="bg-primary/10 text-primary inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl">
+                          <User className="size-4" />
+                        </span>
+                        <div className="space-y-0.5">
+                          <Link
+                            href={`/dashboard/${dashboardRole}/patients/${patient.alias}`}
+                            className="text-primary hover:underline"
+                          >
+                            {patient.name}
+                          </Link>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {patient.age !== "-" ? (
+                        patient.age
+                      ) : (
+                        <small className="text-muted-foreground">
+                          Not provided
+                        </small>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {formatChoiceFieldValue(patient.gender || "") ? (
+                        formatChoiceFieldValue(patient.gender || "")
+                      ) : (
+                        <small className="text-muted-foreground">
+                          Not specified
+                        </small>
+                      )}
+                    </TableCell>
+                    <TableCell className="min-w-45">
+                      {patient.email ? (
+                        patient.email
+                      ) : (
+                        <small className="text-muted-foreground">
+                          Not provided
+                        </small>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {patient.phone ? (
+                        patient.phone
+                      ) : (
+                        <small className="text-muted-foreground">
+                          Not provided
+                        </small>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {patient.last_visit !== "-" ? (
+                        patient.last_visit
+                      ) : (
+                        <small className="text-muted-foreground">
+                          Not provided
+                        </small>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="inline-flex items-center justify-end gap-2 whitespace-nowrap">
+                        <Button asChild variant="default" size="sm">
+                          <Link
+                            href={`/dashboard/${dashboardRole}/patients/${patient.alias}`}
+                          >
+                            <Eye />
+                          </Link>
+                        </Button>
+                        <EditPatietDialog
+                          alias={patient.alias ?? ""}
+                          initialValues={
+                            (patient as RawPatient &
+                              Partial<AddPatientPayload>) ?? {}
+                          }
+                        >
+                          <Button variant="secondary" size="sm">
+                            <Edit />
+                          </Button>
+                        </EditPatietDialog>
+                        <DeletePatientDialog
+                          alias={patient.alias ?? ""}
+                          patientName={patient.name || "Not provided"}
+                        >
+                          <Button variant="danger" size="sm">
+                            <Trash />
+                          </Button>
+                        </DeletePatientDialog>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-muted-foreground text-sm">

@@ -26,6 +26,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarSeparator,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 
 const navItemsByRole: Record<
@@ -142,10 +143,11 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <div className="flex h-[31] items-center px-2 text-sm font-semibold">
+        <div className="flex h-[31] items-center justify-between px-2 text-sm font-semibold">
           <Link href={homeHref} className="text-primary truncate text-3xl">
             ClinicO
           </Link>
+          <SidebarTrigger className="cursor-pointer md:hidden" />
         </div>
       </SidebarHeader>
       <SidebarSeparator />
