@@ -3,16 +3,14 @@
 import {
   BriefcaseMedical,
   Home,
-  LogOutIcon,
   StethoscopeIcon,
   Users,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -87,7 +85,6 @@ function getStoredUserType() {
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const router = useRouter();
   const normalizedPathname = pathname?.replace(/\/$/, "") ?? "";
   const [mounted, setMounted] = useState(false);
 
@@ -112,24 +109,6 @@ export function AppSidebar() {
     () => navItems[0]?.href ?? "/auth/signin",
     [navItems],
   );
-
-  function clearCookie(name: string) {
-    if (typeof document === "undefined") return;
-    document.cookie = `${name}=; Path=/; Max-Age=0; SameSite=Lax`;
-  }
-
-  function handleLogout() {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("token");
-      localStorage.removeItem("refresh");
-      localStorage.removeItem("user_type");
-    }
-
-    clearCookie("token");
-    clearCookie("user_type");
-
-    router.replace("/auth/signin");
-  }
 
   const activeItem = navItems
     .slice()
@@ -182,16 +161,9 @@ export function AppSidebar() {
       </SidebarContent>
       {/* <SidebarSeparator /> */}
       <SidebarFooter>
-        <div className="px-2 pb-2">
-          <Button
-            variant="danger"
-            size="sm"
-            className="w-full cursor-pointer justify-center gap-2 rounded-lg text-sm font-semibold"
-            onClick={handleLogout}
-          >
-            <LogOutIcon className="size-4" />
-            Logout
-          </Button>
+        <div className="flex flex-col items-center justify-center px-2 pb-2">
+          <small className="text-muted-foreground">Powered by</small>
+          <span className="text-primary text-2xl">ClinicO</span>
         </div>
       </SidebarFooter>
       <SidebarRail />
