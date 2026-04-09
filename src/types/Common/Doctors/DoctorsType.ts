@@ -63,6 +63,12 @@ export type EditDoctorDialogProps = {
   children?: React.ReactNode;
 };
 
+export type DeleteDoctorDialogProps = {
+  alias: string;
+  doctorName?: string;
+  children?: React.ReactNode;
+};
+
 export type DoctorRow = RawDoctor & {
   name: string;
   specialty: string;

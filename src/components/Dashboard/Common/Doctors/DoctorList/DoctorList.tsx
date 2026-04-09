@@ -217,7 +217,10 @@ const DoctorList: React.FC = () => {
                           alias={doctor.alias ?? ""}
                           initialValues={doctor}
                         />
-                        <DeleteDioctorDialog />
+                        <DeleteDioctorDialog
+                          alias={doctor.alias ?? ""}
+                          doctorName={doctor.name}
+                        />
                       </>
                     )}
                   </div>
