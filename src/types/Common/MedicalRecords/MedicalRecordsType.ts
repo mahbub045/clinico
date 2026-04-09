@@ -34,6 +34,21 @@ export interface MedicalRecordAppointmentDetails {
   patient_last_name: string;
 }
 
+export interface CreateMedicalRecordPayload {
+  patient?: number | null;
+  appointment?: number | null;
+  patient_record_id?: number | null;
+  age?: number | null;
+  gender?: string;
+  condition?: string;
+  procedure?: string;
+  cost?: number | null;
+  length_of_stay?: number | null;
+  readmission?: string;
+  outcome?: string;
+  satisfaction?: number | null;
+}
+
 export interface MedicalRecordItem {
   id: number;
   alias: string;

@@ -1,12 +1,5 @@
 "use client";
-import {
-  Edit,
-  Eye,
-  LoaderPinwheel,
-  Plus,
-  SearchIcon,
-  Trash2,
-} from "lucide-react";
+import { Edit, Eye, LoaderPinwheel, SearchIcon, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -29,13 +22,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  useDeleteMedicalRecordMutation,
-  useGetMedicalRecordsQuery,
-} from "@/redux/reducers/Common/MedicalRecords/MedicalRecordsApi";
+import { useGetMedicalRecordsQuery } from "@/redux/reducers/Common/MedicalRecords/MedicalRecordsApi";
 import { useGetUserInfoQuery } from "@/redux/reducers/Common/UserInfo/UserInfoApi";
 import { MedicalRecordItem } from "@/types/Common/MedicalRecords/MedicalRecordsType";
-import { formatDate } from "../../../../../utils/formatters";
+import { formatDate, getCurrencySign } from "../../../../../utils/formatters";
+import CreateMedicalRecordDialog from "./Dialogs/CreateMedicalRecordDialog";
+import DeleteMedicalRecordDialog from "./Dialogs/DeleteMedicalRecordDialog";
+import EditMedicalRecordDialog from "./Dialogs/EditMedicalRecordDialog";
 
 const getPaginationRange = (currentPage: number, totalPages: number) => {
   if (totalPages <= 9) {
@@ -65,12 +58,14 @@ const getPaginationRange = (currentPage: number, totalPages: number) => {
 const MedicalRecordList: React.FC = () => {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
+  const [editingRecord, setEditingRecord] = useState<MedicalRecordItem | null>(
+    null,
+  );
 
   const queryParams = useMemo(() => ({ search: query, page }), [query, page]);
 
   const { data: medicalRecords, isLoading } =
     useGetMedicalRecordsQuery(queryParams);
-  const [deleteMedicalRecord] = useDeleteMedicalRecordMutation();
 
   const records = useMemo<MedicalRecordItem[]>(() => {
     if (!medicalRecords) return [];
@@ -128,10 +123,7 @@ const MedicalRecordList: React.FC = () => {
                 className="w-full pl-10"
               />
             </div>
-            <Button variant="secondary" size="sm">
-              <Plus className="h-4 w-4" />
-              Create record
-            </Button>
+            <CreateMedicalRecordDialog />
           </div>
         </div>
 
@@ -201,7 +193,7 @@ const MedicalRecordList: React.FC = () => {
                       <TableCell>{record.outcome}</TableCell>
                       <TableCell>
                         {record.cost != null
-                          ? `AUD ${record.cost.toLocaleString()}`
+                          ? `${getCurrencySign()} ${record.cost}`
                           : "-"}
                       </TableCell>
                       <TableCell>{formatDate(record.created_at)}</TableCell>
@@ -217,12 +209,21 @@ const MedicalRecordList: React.FC = () => {
                           </Button>
                           {userInfo && userInfo.user_type === "ADMIN" && (
                             <>
-                              <Button variant="secondary" size="sm">
+                              <Button
+                                variant="secondary"
+                                size="sm"
+                                onClick={() => setEditingRecord(record)}
+                              >
                                 <Edit />
                               </Button>
-                              <Button variant="danger" size="sm">
-                                <Trash2 />
-                              </Button>
+                              <DeleteMedicalRecordDialog
+                                alias={record.alias}
+                                recordLabel={`${patientName || "This"} medical record`}
+                              >
+                                <Button variant="danger" size="sm">
+                                  <Trash2 />
+                                </Button>
+                              </DeleteMedicalRecordDialog>
                             </>
                           )}
                         </div>
@@ -234,6 +235,17 @@ const MedicalRecordList: React.FC = () => {
             </TableBody>
           </Table>
         </div>
+
+        {editingRecord && (
+          <EditMedicalRecordDialog
+            key={editingRecord.alias}
+            record={editingRecord}
+            open={Boolean(editingRecord)}
+            onOpenChange={(open) => {
+              if (!open) setEditingRecord(null);
+            }}
+          />
+        )}
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-muted-foreground text-sm">

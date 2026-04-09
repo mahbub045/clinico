@@ -17,6 +17,14 @@ export const MedicalRecordsApi = BaseApi.injectEndpoints({
       }),
       providesTags: ["MedicalRecords"],
     }),
+    createMedicalRecord: build.mutation({
+      query: (data) => ({
+        url: "/api/core/medical-records/",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["MedicalRecords"],
+    }),
     editMedicalRecord: build.mutation({
       query: ({ alias, ...data }) => ({
         url: `/api/core/medical-records/${alias}/`,
@@ -38,6 +46,7 @@ export const MedicalRecordsApi = BaseApi.injectEndpoints({
 export const {
   useGetMedicalRecordsQuery,
   useGetMedicalRecordDetailsQuery,
+  useCreateMedicalRecordMutation,
   useEditMedicalRecordMutation,
   useDeleteMedicalRecordMutation,
 } = MedicalRecordsApi;

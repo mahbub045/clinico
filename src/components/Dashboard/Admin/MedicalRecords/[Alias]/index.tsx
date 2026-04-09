@@ -8,9 +8,10 @@ const MedicalRecordDetailsContainer: React.FC = () => {
         items={[
           { label: "Home", href: "/dashboard/admin" },
           {
+            label: "Medical Records",
             href: "/dashboard/admin/medical-records",
           },
-          { label: "Record Details", href: "#" },
+          { label: "Medical Record Details", href: "#" },
         ]}
       />
       <MedicalRecordDetails />
