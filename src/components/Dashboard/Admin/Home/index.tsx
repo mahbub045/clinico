@@ -1,5 +1,7 @@
 import Breadcrumbs from "../../Common/Breadcrumbs/Breadcrumbs";
 import MedicalRecordAnalyticsCondition from "./components/MedicalRecordAnalyticsCondition";
+import MedicalRecordAnalyticsMonthlyCost from "./components/MedicalRecordAnalyticsMonthlyCost";
+import MedicalRecordAnalyticsOutcome from "./components/MedicalRecordAnalyticsOutcome";
 import MedicalRecordAnalyticsProcedure from "./components/MedicalRecordAnalyticsProcedure";
 import MedicalRecordSummary from "./components/MedicalRecordSummary";
 
@@ -15,7 +17,11 @@ const AdminHomeContainer: React.FC = () => {
           <MedicalRecordAnalyticsProcedure />
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-2"></div>
+        <MedicalRecordAnalyticsOutcome />
+
+        <div className="grid gap-6 xl:grid-cols-2">
+          <MedicalRecordAnalyticsMonthlyCost />
+        </div>
       </div>
     </>
   );

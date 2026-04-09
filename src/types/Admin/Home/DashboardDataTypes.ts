@@ -18,6 +18,22 @@ export type ConditionAnalyticsPoint = {
   average_satisfaction: number;
 };
 
+export type OutcomeAnalyticsPoint = {
+  outcome: string;
+  total_records: number;
+  total_cost: number;
+  average_cost: number;
+  average_satisfaction: number;
+};
+
+export type MonthlyCostAnalyticsPoint = {
+  year: number;
+  month: number;
+  total_cost: number;
+  total_records: number;
+  average_cost: number;
+};
+
 export type ProcedureAnalyticsPoint = {
   procedure: string;
   total_records: number;

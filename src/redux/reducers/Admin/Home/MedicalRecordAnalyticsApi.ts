@@ -16,10 +16,26 @@ export const MedicalRecordAnalyticsApi = BaseApi.injectEndpoints({
       }),
       providesTags: ["MedicalRecordSummary"],
     }),
+    getMedicalRecordAnalyticsOutcome: builder.query({
+      query: () => ({
+        url: "/api/core/medical-records/analytics/outcome/",
+        method: "GET",
+      }),
+      providesTags: ["MedicalRecordSummary"],
+    }),
+    getMedicalRecordAnalyticsMonthlyCost: builder.query({
+      query: () => ({
+        url: "/api/core/medical-records/analytics/monthly-cost-trend/",
+        method: "GET",
+      }),
+      providesTags: ["MedicalRecordSummary"],
+    }),
   }),
 });
 
 export const {
   useGetMedicalRecordAnalyticsConditionQuery,
   useGetMedicalRecordAnalyticsProcedureQuery,
+  useGetMedicalRecordAnalyticsOutcomeQuery,
+  useGetMedicalRecordAnalyticsMonthlyCostQuery,
 } = MedicalRecordAnalyticsApi;
