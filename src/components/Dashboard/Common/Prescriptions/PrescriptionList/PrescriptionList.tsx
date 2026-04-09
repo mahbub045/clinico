@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, LoaderPinwheel, SearchIcon } from "lucide-react";
+import { Edit, Eye, LoaderPinwheel, SearchIcon, Trash } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -26,8 +26,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useGetPrescriptionsQuery } from "@/redux/reducers/Common/Prescriptions/PrescriptionsApi";
+import { useGetUserInfoQuery } from "@/redux/reducers/Common/UserInfo/UserInfoApi";
 import { PrescriptionItem } from "@/types/Common/Prescriptions/PrescriptionsType";
 import { formatDate } from "../../../../../../utils/formatters";
+import CreatePrescriptionDialog from "../Dialogs/CreatePrescriptionDialog";
+import DeletePrescriptionDialog from "../Dialogs/DeletePrescriptionDialog";
+import EditPrescriptionDialog from "../Dialogs/EditPrescriptionDialog";
 
 const getPaginationRange = (currentPage: number, totalPages: number) => {
   if (totalPages <= 9) {
@@ -99,6 +103,8 @@ const PrescriptionList: React.FC = () => {
   const pathname = usePathname();
   const dashboardRole = pathname?.split("/")[2] || "";
 
+  const { data: userInfo } = useGetUserInfoQuery(undefined);
+
   return (
     <div className="space-y-8">
       <Card className="rounded-md p-6 shadow-sm">
@@ -116,18 +122,21 @@ const PrescriptionList: React.FC = () => {
             </p>
           </div>
 
-          <div className="relative w-full max-w-sm">
-            <SearchIcon className="text-primary pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-            <Input
-              id="prescription-search"
-              className="w-full pl-10"
-              placeholder="Search prescriptions"
-              value={search}
-              onChange={(event) => {
-                setSearch(event.target.value);
-                setPage(1);
-              }}
-            />
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="relative w-full max-w-sm">
+              <SearchIcon className="text-primary pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+              <Input
+                id="prescription-search"
+                className="w-full pl-10"
+                placeholder="Search prescriptions"
+                value={search}
+                onChange={(event) => {
+                  setSearch(event.target.value);
+                  setPage(1);
+                }}
+              />
+            </div>
+            {userInfo?.user_type === "DOCTOR" && <CreatePrescriptionDialog />}
           </div>
         </div>
 
@@ -229,6 +238,37 @@ const PrescriptionList: React.FC = () => {
                             <Eye />
                           </Link>
                         </Button>
+                        {userInfo?.user_type === "DOCTOR" && (
+                          <>
+                            <EditPrescriptionDialog
+                              alias={prescription.alias}
+                              initialValues={{
+                                prescription_number:
+                                  prescription.prescription_number,
+                                diagnosis: prescription.diagnosis,
+                                medicines: prescription.medicines,
+                                advice: prescription.advice,
+                                notes: prescription.notes,
+                              }}
+                            >
+                              <Button variant="secondary" size="sm">
+                                <Edit />
+                              </Button>
+                            </EditPrescriptionDialog>
+                            <DeletePrescriptionDialog
+                              alias={prescription.alias}
+                              prescriptionLabel={
+                                prescription.prescription_number ||
+                                prescription.slug ||
+                                "this prescription"
+                              }
+                            >
+                              <Button variant="danger" size="sm">
+                                <Trash />
+                              </Button>
+                            </DeletePrescriptionDialog>
+                          </>
+                        )}
                       </TableCell>
                     </TableRow>
                   );

@@ -24,10 +24,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  useCommonAppointmentListQuery,
-  useCreateMedicalRecordMutation,
-} from "@/redux/reducers/Common/MedicalRecords/MedicalRecordsApi";
+import { useCommonAppointmentListQuery } from "@/redux/reducers/Common/CommonApis/CommonApis";
+import { useCreateMedicalRecordMutation } from "@/redux/reducers/Common/MedicalRecords/MedicalRecordsApi";
 import { Appointment } from "@/types/Common/Appointments/AppointmentsType";
 import { CreateMedicalRecordPayload } from "@/types/Common/MedicalRecords/MedicalRecordsType";
 import { Plus } from "lucide-react";

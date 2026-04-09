@@ -23,6 +23,29 @@ export const PrescriptionsApi = BaseApi.injectEndpoints({
         responseHandler: async (response: Response) => response.blob(),
       }),
     }),
+    createPrescription: build.mutation({
+      query: (data) => ({
+        url: "/api/prescriptions/",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Prescriptions"],
+    }),
+    editPrescription: build.mutation({
+      query: ({ alias, data }) => ({
+        url: `/api/prescriptions/${alias}/`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Prescriptions"],
+    }),
+    deletePrescription: build.mutation({
+      query: (alias) => ({
+        url: `/api/prescriptions/${alias}/`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Prescriptions"],
+    }),
   }),
 });
 
@@ -30,4 +53,7 @@ export const {
   useGetPrescriptionsQuery,
   useGetPrescriptionDetailsQuery,
   useDownloadPrescriptionMutation,
+  useCreatePrescriptionMutation,
+  useEditPrescriptionMutation,
+  useDeletePrescriptionMutation,
 } = PrescriptionsApi;

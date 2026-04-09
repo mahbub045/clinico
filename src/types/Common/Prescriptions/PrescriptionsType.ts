@@ -12,5 +12,32 @@ export type PrescriptionItem = {
   };
   diagnosis?: string;
   medicines?: string;
+  advice?: string;
+  notes?: string;
   created_at?: string;
 };
+export type CreatePrescriptionPayload = {
+  appointment: string;
+  diagnosis: string;
+  medicines: string;
+  advice: string;
+  notes: string;
+};
+
+export interface EditPrescriptionDialogProps {
+  alias: string;
+  initialValues: {
+    prescription_number?: string;
+    diagnosis?: string;
+    medicines?: string;
+    advice?: string;
+    notes?: string;
+  };
+  children?: React.ReactNode;
+}
+
+export interface DeletePrescriptionDialogProps {
+  alias?: string | null;
+  prescriptionLabel?: string | null;
+  children?: React.ReactNode;
+}

@@ -40,15 +40,6 @@ export const MedicalRecordsApi = BaseApi.injectEndpoints({
       }),
       invalidatesTags: ["MedicalRecords"],
     }),
-
-    commonAppointmentList: build.query({
-      query: (search) => ({
-        url: "api/common/appointment-list/",
-        method: "GET",
-        params: { search },
-      }),
-      providesTags: ["Appointments"],
-    }),
   }),
 });
 
@@ -58,5 +49,4 @@ export const {
   useCreateMedicalRecordMutation,
   useEditMedicalRecordMutation,
   useDeleteMedicalRecordMutation,
-  useCommonAppointmentListQuery,
 } = MedicalRecordsApi;

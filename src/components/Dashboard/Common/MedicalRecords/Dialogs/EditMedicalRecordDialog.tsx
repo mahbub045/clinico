@@ -25,10 +25,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  useCommonAppointmentListQuery,
-  useEditMedicalRecordMutation,
-} from "@/redux/reducers/Common/MedicalRecords/MedicalRecordsApi";
+import { useCommonAppointmentListQuery } from "@/redux/reducers/Common/CommonApis/CommonApis";
+import { useEditMedicalRecordMutation } from "@/redux/reducers/Common/MedicalRecords/MedicalRecordsApi";
 import { Appointment } from "@/types/Common/Appointments/AppointmentsType";
 import {
   CreateMedicalRecordPayload,
