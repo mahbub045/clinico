@@ -30,6 +30,7 @@ import {
   DoctorsResponse,
   RawDoctor,
 } from "@/types/Common/Doctors/DoctorsType";
+import { formatChoiceFieldValue } from "../../../../../../utils/formatters";
 import AddDioctorDialog from "./Dialogs/AddDioctorDialog";
 import DeleteDioctorDialog from "./Dialogs/DeleteDioctorDialog";
 import EditDioctorDialog from "./Dialogs/EditDioctorDialog";
@@ -179,6 +180,7 @@ const DoctorList: React.FC = () => {
                         href={`/dashboard/${dashboardRole}/doctors/${doctor.alias ?? ""}`}
                         className="text-primary hover:underline"
                       >
+                        {formatChoiceFieldValue(doctor.title) + " "}
                         {doctor.name}
                       </Link>
                     </div>
@@ -211,7 +213,10 @@ const DoctorList: React.FC = () => {
                     </Button>
                     {userInfo?.user_type === "ADMIN" && (
                       <>
-                        <EditDioctorDialog />
+                        <EditDioctorDialog
+                          alias={doctor.alias ?? ""}
+                          initialValues={doctor}
+                        />
                         <DeleteDioctorDialog />
                       </>
                     )}

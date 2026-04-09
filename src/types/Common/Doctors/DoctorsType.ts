@@ -10,6 +10,7 @@ export type RawDoctor = {
   email?: string;
   phone?: string;
   degree?: string;
+  consultation_fee?: number;
   experience_years?: number;
   joined_date?: string;
   address?: string;
@@ -55,6 +56,12 @@ export type DoctorsResponse =
       results?: RawDoctor[];
     }
   | RawDoctor;
+
+export type EditDoctorDialogProps = {
+  alias: string;
+  initialValues: RawDoctor;
+  children?: React.ReactNode;
+};
 
 export type DoctorRow = RawDoctor & {
   name: string;
