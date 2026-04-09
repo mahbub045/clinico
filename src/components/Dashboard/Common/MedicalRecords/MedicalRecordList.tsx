@@ -33,6 +33,7 @@ import {
   useDeleteMedicalRecordMutation,
   useGetMedicalRecordsQuery,
 } from "@/redux/reducers/Common/MedicalRecords/MedicalRecordsApi";
+import { useGetUserInfoQuery } from "@/redux/reducers/Common/UserInfo/UserInfoApi";
 import { MedicalRecordItem } from "@/types/Common/MedicalRecords/MedicalRecordsType";
 import { formatDate } from "../../../../../utils/formatters";
 
@@ -93,6 +94,8 @@ const MedicalRecordList: React.FC = () => {
 
   const pathname = usePathname();
   const dashboardRole = pathname?.split("/")[2] || "";
+
+  const { data: userInfo } = useGetUserInfoQuery(undefined);
 
   return (
     <div className="card bg-card space-y-10 rounded-md p-6 shadow-sm">
@@ -186,7 +189,7 @@ const MedicalRecordList: React.FC = () => {
                     <TableRow key={record.alias}>
                       <TableCell className="text-foreground font-medium">
                         <Link
-                          href={`/dashboard/${dashboardRole}/patients/${record.patient_details.alias}`}
+                          href={`/dashboard/${dashboardRole}/medical-records/${record.alias}`}
                           className="text-primary hover:underline"
                         >
                           {patientName || "Unknown patient"}
@@ -212,32 +215,16 @@ const MedicalRecordList: React.FC = () => {
                               <Eye />
                             </Link>
                           </Button>
-                          <Button asChild variant="secondary" size="sm">
-                            <Link
-                              href={`/dashboard/${dashboardRole}/medical-records/${record.alias}/edit`}
-                              aria-label={`Edit medical record for ${patientName}`}
-                            >
-                              <Edit />
-                            </Link>
-                          </Button>
-                          <Button
-                            variant="danger"
-                            size="sm"
-                            onClick={async () => {
-                              if (
-                                window.confirm(
-                                  `Delete medical record for ${patientName}?`,
-                                )
-                              ) {
-                                await deleteMedicalRecord(
-                                  record.alias,
-                                ).unwrap();
-                              }
-                            }}
-                            aria-label={`Delete medical record for ${patientName}`}
-                          >
-                            <Trash2 />
-                          </Button>
+                          {userInfo && userInfo.user_type === "ADMIN" && (
+                            <>
+                              <Button variant="secondary" size="sm">
+                                <Edit />
+                              </Button>
+                              <Button variant="danger" size="sm">
+                                <Trash2 />
+                              </Button>
+                            </>
+                          )}
                         </div>
                       </TableCell>
                     </TableRow>
