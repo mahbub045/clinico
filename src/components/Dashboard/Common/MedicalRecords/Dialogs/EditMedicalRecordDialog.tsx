@@ -2,6 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -26,7 +34,7 @@ import {
   CreateMedicalRecordPayload,
   MedicalRecordItem,
 } from "@/types/Common/MedicalRecords/MedicalRecordsType";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 interface EditMedicalRecordDialogProps {
@@ -63,9 +71,22 @@ const EditMedicalRecordDialog: React.FC<EditMedicalRecordDialogProps> = ({
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [editMedicalRecord, { isLoading }] = useEditMedicalRecordMutation();
 
-  const { data: appointmentsData } = useCommonAppointmentListQuery(undefined, {
-    skip: !open,
-  });
+  const [appointmentQuery, setAppointmentQuery] = useState("");
+  const [debouncedAppointmentQuery, setDebouncedAppointmentQuery] =
+    useState("");
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
+  const [appointmentPortalContainer, setAppointmentPortalContainer] =
+    useState<HTMLDivElement | null>(null);
+
+  const {
+    data: appointmentsData,
+    isLoading: appointmentsLoading,
+    isFetching: appointmentsFetching,
+  } = useCommonAppointmentListQuery(
+    debouncedAppointmentQuery.length ? debouncedAppointmentQuery : undefined,
+    { skip: !open },
+  );
 
   const appointmentsList = Array.isArray(appointmentsData)
     ? (appointmentsData as Appointment[])
@@ -74,6 +95,13 @@ const EditMedicalRecordDialog: React.FC<EditMedicalRecordDialogProps> = ({
         "results" in appointmentsData
       ? (appointmentsData.results as Appointment[])
       : [];
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setDebouncedAppointmentQuery(appointmentQuery.trim());
+    }, 300);
+    return () => window.clearTimeout(timer);
+  }, [appointmentQuery]);
 
   const getAppointmentLabel = (appointment: Appointment) => {
     const date = appointment.appointment_date ?? "";
@@ -202,32 +230,62 @@ const EditMedicalRecordDialog: React.FC<EditMedicalRecordDialogProps> = ({
               >
                 Appointment<span className="text-destructive">*</span>
               </label>
-              <Select
-                value={formData.appointment ? String(formData.appointment) : ""}
-                onValueChange={(value) =>
-                  handleNumberChange("appointment", value)
-                }
+              <div ref={setAppointmentPortalContainer} />
+              <Combobox
+                items={appointmentsList}
+                value={selectedAppointment}
+                onValueChange={(appointment) => {
+                  setSelectedAppointment(appointment);
+                  setAppointmentQuery(
+                    appointment ? getAppointmentLabel(appointment) : "",
+                  );
+                  handleNumberChange(
+                    "appointment",
+                    appointment ? String(appointment.id) : "",
+                  );
+                }}
+                inputValue={appointmentQuery}
+                onInputValueChange={(next) => {
+                  setAppointmentQuery(next);
+                  if (selectedAppointment) {
+                    const selectedLabel =
+                      getAppointmentLabel(selectedAppointment);
+                    if (next !== selectedLabel) {
+                      setSelectedAppointment(null);
+                      handleNumberChange("appointment", "");
+                    }
+                  }
+                }}
+                isItemEqualToValue={(item, value) => item.id === value.id}
+                itemToStringLabel={(item) => getAppointmentLabel(item)}
+                itemToStringValue={(item) => String(item.id)}
+                disabled={appointmentsLoading}
               >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select appointment" />
-                </SelectTrigger>
-                <SelectContent>
-                  {appointmentsList.length === 0 ? (
-                    <div className="text-muted-foreground p-3 text-sm">
-                      No appointments available
-                    </div>
-                  ) : (
-                    appointmentsList.map((appointment) => (
-                      <SelectItem
-                        key={appointment.id as number}
-                        value={String(appointment.id as number)}
-                      >
+                <ComboboxInput
+                  className="w-full"
+                  id="appointment"
+                  placeholder={
+                    appointmentsLoading || appointmentsFetching
+                      ? "Searching appointments..."
+                      : "Search appointments..."
+                  }
+                  showClear
+                />
+                <ComboboxContent portalContainer={appointmentPortalContainer}>
+                  <ComboboxEmpty>
+                    {appointmentsLoading || appointmentsFetching
+                      ? "Searching..."
+                      : "No appointments found."}
+                  </ComboboxEmpty>
+                  <ComboboxList>
+                    {(appointment: Appointment) => (
+                      <ComboboxItem key={appointment.id} value={appointment}>
                         {getAppointmentLabel(appointment)}
-                      </SelectItem>
-                    ))
-                  )}
-                </SelectContent>
-              </Select>
+                      </ComboboxItem>
+                    )}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
               {renderFieldError("appointment")}
             </div>
 
