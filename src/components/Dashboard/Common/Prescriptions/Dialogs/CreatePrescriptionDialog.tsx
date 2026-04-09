@@ -165,7 +165,7 @@ const CreatePrescriptionDialog: React.FC = () => {
                 className="text-foreground text-sm font-medium"
                 htmlFor="appointment-search"
               >
-                Appointment
+                Appointment<span className="text-danger">*</span>
               </label>
               <div ref={setAppointmentPortalContainer} />
               <Combobox
@@ -191,6 +191,7 @@ const CreatePrescriptionDialog: React.FC = () => {
                 <ComboboxInput
                   className="w-full"
                   id="appointment-search"
+                  required
                   placeholder={
                     appointmentsLoading || appointmentsFetching
                       ? "Searching appointments..."
@@ -225,7 +226,7 @@ const CreatePrescriptionDialog: React.FC = () => {
                 className="text-foreground text-sm font-medium"
                 htmlFor="diagnosis"
               >
-                Diagnosis
+                Diagnosis<span className="text-danger">*</span>
               </label>
               <Input
                 id="diagnosis"
@@ -234,6 +235,7 @@ const CreatePrescriptionDialog: React.FC = () => {
                   setFormData({ ...formData, diagnosis: event.target.value })
                 }
                 placeholder="Enter diagnosis"
+                required
               />
               {fieldErrors.diagnosis?.map((message) => (
                 <p key={message} className="text-destructive text-xs">
@@ -247,7 +249,7 @@ const CreatePrescriptionDialog: React.FC = () => {
                 className="text-foreground text-sm font-medium"
                 htmlFor="medicines"
               >
-                Medicines
+                Medicines<span className="text-danger">*</span>
               </label>
               <Textarea
                 id="medicines"
@@ -257,6 +259,7 @@ const CreatePrescriptionDialog: React.FC = () => {
                 }
                 placeholder="List medicines and instructions"
                 rows={4}
+                required
               />
               {fieldErrors.medicines?.map((message) => (
                 <p key={message} className="text-destructive text-xs">
