@@ -50,6 +50,15 @@ const initialFormState: AddAppointmentPayload = {
   notes: "",
 };
 
+const appointmentTimeOptions = Array.from({ length: 17 }, (_, index) => {
+  const totalMinutes = 9 * 60 + index * 30;
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}`;
+});
+
 const AddAppointmentDialog: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] =
@@ -199,6 +208,9 @@ const AddAppointmentDialog: React.FC = () => {
       setFormData(initialFormState);
       setSelectedPatient(null);
       setSelectedDoctor(null);
+      setPatientQuery("");
+      setDoctorQuery("");
+      setFieldErrors({});
       setOpen(false);
     } catch (error) {
       console.error("Failed to create appointment", error);
@@ -460,13 +472,24 @@ const AddAppointmentDialog: React.FC = () => {
               >
                 Appointment time<span className="text-danger">*</span>
               </label>
-              <Input
-                id="appointment_time"
-                type="time"
+              <Select
                 value={formData.appointment_time}
-                onChange={handleInputChange("appointment_time")}
+                onValueChange={(value) =>
+                  handleSelectChange("appointment_time", value)
+                }
                 required
-              />
+              >
+                <SelectTrigger id="appointment_time" className="w-full">
+                  <SelectValue placeholder="Select appointment time" />
+                </SelectTrigger>
+                <SelectContent>
+                  {appointmentTimeOptions.map((time) => (
+                    <SelectItem key={time} value={time}>
+                      {time}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {renderFieldError("appointment_time")}
             </div>
           </div>

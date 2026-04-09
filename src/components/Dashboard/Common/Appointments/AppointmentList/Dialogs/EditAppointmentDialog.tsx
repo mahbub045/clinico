@@ -61,6 +61,15 @@ const buildFormState = (
   notes: values.notes ?? "",
 });
 
+const appointmentTimeOptions = Array.from({ length: 17 }, (_, index) => {
+  const totalMinutes = 9 * 60 + index * 30;
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}`;
+});
+
 const EditAppointmentDialog: React.FC<EditAppointmentDialogProps> = ({
   alias,
   initialValues,
@@ -71,6 +80,12 @@ const EditAppointmentDialog: React.FC<EditAppointmentDialogProps> = ({
     buildFormState(initialValues),
   );
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
+
+  const availableAppointmentTimeOptions =
+    formData.appointment_time &&
+    !appointmentTimeOptions.includes(formData.appointment_time)
+      ? [formData.appointment_time, ...appointmentTimeOptions]
+      : appointmentTimeOptions;
 
   const [comboboxPortalContainer, setComboboxPortalContainer] =
     useState<HTMLDivElement | null>(null);
@@ -487,12 +502,23 @@ const EditAppointmentDialog: React.FC<EditAppointmentDialogProps> = ({
               >
                 Appointment time
               </label>
-              <Input
-                id="appointment_time"
-                type="time"
+              <Select
                 value={formData.appointment_time}
-                onChange={handleInputChange("appointment_time")}
-              />
+                onValueChange={(value) =>
+                  handleSelectChange("appointment_time", value)
+                }
+              >
+                <SelectTrigger id="appointment_time" className="w-full">
+                  <SelectValue placeholder="Select appointment time" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableAppointmentTimeOptions.map((time) => (
+                    <SelectItem key={time} value={time}>
+                      {time}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {renderFieldError("appointment_time")}
             </div>
           </div>
