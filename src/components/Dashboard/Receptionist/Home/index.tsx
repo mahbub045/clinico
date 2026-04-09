@@ -1,6 +1,7 @@
 import type { Appointment } from "@/types/Common/Appointments/AppointmentsType";
 import Breadcrumbs from "../../Common/Breadcrumbs/Breadcrumbs";
 
+import BillsPaymentMethods from "../../Common/Home/BillsPaymentMethods";
 import BillsPaymentStatus from "../../Common/Home/BillsPaymentStatus";
 import PrescriptionsMonthlyTrend from "../../Common/Home/PrescriptionsMonthlyTrend";
 import BillingSummary from "./components/BillingSummary";
@@ -8,6 +9,8 @@ import QuickActions from "./components/QuickActions";
 import SummaryCards from "./components/SummaryCards";
 import TodayAppointmentsTable from "./components/TodayAppointmentsTable";
 import TodaysActivityChart from "./components/TodaysActivityChart";
+import BillsDoctorTrend from "../../Common/Home/BillsDoctorTrend";
+import BillsMonthlyTrend from "../../Common/Home/BillsMonthlyTrend";
 
 const activityData = [
   { hour: "09 AM", appointments: 2 },
@@ -101,7 +104,14 @@ const ReceptionistHomeContainer = () => {
         />
 
         <PrescriptionsMonthlyTrend />
-        <BillsPaymentStatus />
+
+        <div className="grid gap-6 lg:grid-cols-2">
+          <BillsPaymentStatus />
+          <BillsPaymentMethods />
+        </div>
+
+        <BillsDoctorTrend />
+        <BillsMonthlyTrend />
 
         <div className="grid gap-6 lg:grid-cols-[1.35fr_0.65fr]">
           <TodaysActivityChart data={activityData} loading={false} />

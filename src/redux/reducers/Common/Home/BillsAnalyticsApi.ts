@@ -9,7 +9,33 @@ export const BillsAnalyticsApi = BaseApi.injectEndpoints({
       }),
       providesTags: ["BillsAnalytics"],
     }),
+    getBillsPaymentMethods: build.query({
+      query: () => ({
+        url: "api/bills/analytics/payment-method/",
+        method: "GET",
+      }),
+      providesTags: ["BillsAnalytics"],
+    }),
+    getBillsDoctorTrend: build.query({
+      query: () => ({
+        url: "/api/bills/analytics/doctor/",
+        method: "GET",
+      }),
+      providesTags: ["BillsAnalytics"],
+    }),
+    getBillsMonthlyTrend: build.query({
+      query: () => ({
+        url: "/api/bills/analytics/monthly-trend/",
+        method: "GET",
+      }),
+      providesTags: ["BillsAnalytics"],
+    }),
   }),
 });
 
-export const { useGetBillsPaymentStatusQuery } = BillsAnalyticsApi;
+export const {
+  useGetBillsPaymentStatusQuery,
+  useGetBillsPaymentMethodsQuery,
+  useGetBillsDoctorTrendQuery,
+  useGetBillsMonthlyTrendQuery,
+} = BillsAnalyticsApi;

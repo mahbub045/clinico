@@ -1,4 +1,7 @@
 import Breadcrumbs from "../../Common/Breadcrumbs/Breadcrumbs";
+import BillsDoctorTrend from "../../Common/Home/BillsDoctorTrend";
+import BillsMonthlyTrend from "../../Common/Home/BillsMonthlyTrend";
+import BillsPaymentMethods from "../../Common/Home/BillsPaymentMethods";
 import BillsPaymentStatus from "../../Common/Home/BillsPaymentStatus";
 import PrescriptionsMonthlyTrend from "../../Common/Home/PrescriptionsMonthlyTrend";
 import MedicalRecordAnalyticsAgeGroup from "./components/MedicalRecordAnalyticsAgeGroup";
@@ -37,7 +40,12 @@ const AdminHomeContainer: React.FC = () => {
           <MedicalRecordAnalyticsAgeGroup />
         </div>
         <PrescriptionsMonthlyTrend />
-        <BillsPaymentStatus />
+        <BillsMonthlyTrend />
+        <div className="grid gap-6 lg:grid-cols-2">
+          <BillsPaymentStatus />
+          <BillsPaymentMethods />
+        </div>
+        <BillsDoctorTrend />
         <MedicalRecordAnalyticsLengthStay />
       </div>
     </>

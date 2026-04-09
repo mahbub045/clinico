@@ -8,17 +8,12 @@ import {
 } from "@/components/ui/chart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetBillsPaymentStatusQuery } from "@/redux/reducers/Common/Home/BillsAnalyticsApi";
+import { BillsPaymentStatusPoint } from "@/types/Common/Home/BillsAnalyticsTypes";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   formatChoiceFieldValue,
   getCurrencySign,
 } from "../../../../../utils/formatters";
-
-type BillsPaymentStatusPoint = {
-  payment_status: string;
-  total_bills: number;
-  total_amount: number;
-};
 
 const BillsPaymentStatus: React.FC = () => {
   const { data, isLoading, isError } = useGetBillsPaymentStatusQuery(undefined);
