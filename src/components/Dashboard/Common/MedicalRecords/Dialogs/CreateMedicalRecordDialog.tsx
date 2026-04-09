@@ -151,7 +151,7 @@ const CreateMedicalRecordDialog: React.FC = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="secondary" className="inline-flex items-center gap-2">
+        <Button variant="secondary">
           <Plus />
           Create record
         </Button>
