@@ -1,6 +1,8 @@
 import type { Appointment } from "@/types/Common/Appointments/AppointmentsType";
 import Breadcrumbs from "../../Common/Breadcrumbs/Breadcrumbs";
 
+import BillsPaymentStatus from "../../Common/Home/BillsPaymentStatus";
+import PrescriptionsMonthlyTrend from "../../Common/Home/PrescriptionsMonthlyTrend";
 import BillingSummary from "./components/BillingSummary";
 import QuickActions from "./components/QuickActions";
 import SummaryCards from "./components/SummaryCards";
@@ -97,6 +99,9 @@ const ReceptionistHomeContainer = () => {
             pendingBills: 13,
           }}
         />
+
+        <PrescriptionsMonthlyTrend />
+        <BillsPaymentStatus />
 
         <div className="grid gap-6 lg:grid-cols-[1.35fr_0.65fr]">
           <TodaysActivityChart data={activityData} loading={false} />

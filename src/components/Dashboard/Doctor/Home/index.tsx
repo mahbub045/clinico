@@ -1,4 +1,5 @@
 import Breadcrumbs from "../../Common/Breadcrumbs/Breadcrumbs";
+import PrescriptionsMonthlyTrend from "../../Common/Home/PrescriptionsMonthlyTrend";
 import DiseaseDistribution from "./components/DiseaseDistribution";
 import PatientList from "./components/PatientList";
 import QuickActions from "./components/QuickActions";
@@ -31,6 +32,8 @@ const DoctorHomeContainer = () => {
         </div>
 
         <SummaryCards />
+
+        <PrescriptionsMonthlyTrend />
 
         <div className="grid gap-6 md:grid-cols-[1.5fr_1fr]">
           <WeeklySummary />
