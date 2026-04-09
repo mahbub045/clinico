@@ -16,9 +16,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetAppointmentsQuery } from "@/redux/reducers/Common/Appointments/AppointmentsApi";
-import { useCreateMedicalRecordMutation } from "@/redux/reducers/Common/MedicalRecords/MedicalRecordsApi";
-import { useGetPatientsQuery } from "@/redux/reducers/Common/Patients/PatientsApi";
+import {
+  useCommonAppointmentListQuery,
+  useCreateMedicalRecordMutation,
+} from "@/redux/reducers/Common/MedicalRecords/MedicalRecordsApi";
+import { Appointment } from "@/types/Common/Appointments/AppointmentsType";
 import { CreateMedicalRecordPayload } from "@/types/Common/MedicalRecords/MedicalRecordsType";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -46,43 +48,25 @@ const CreateMedicalRecordDialog: React.FC = () => {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [createMedicalRecord, { isLoading }] = useCreateMedicalRecordMutation();
 
-  const { data: patientsData } = useGetPatientsQuery(undefined, {
+  const { data: appointmentsData } = useCommonAppointmentListQuery(undefined, {
     skip: !open,
   });
-  const { data: appointmentsData } = useGetAppointmentsQuery(undefined, {
-    skip: !open,
-  });
-
-  const patientsList = Array.isArray(patientsData)
-    ? patientsData
-    : patientsData &&
-        typeof patientsData === "object" &&
-        "results" in patientsData
-      ? (patientsData.results as Array<Record<string, unknown>>)
-      : [];
 
   const appointmentsList = Array.isArray(appointmentsData)
-    ? appointmentsData
+    ? (appointmentsData as Appointment[])
     : appointmentsData &&
         typeof appointmentsData === "object" &&
         "results" in appointmentsData
-      ? (appointmentsData.results as Array<Record<string, unknown>>)
+      ? (appointmentsData.results as Appointment[])
       : [];
 
-  const getPatientLabel = (patient: Record<string, unknown>) => {
-    const firstName = patient.first_name as string | undefined;
-    const lastName = patient.last_name as string | undefined;
-    return (
-      [firstName, lastName].filter(Boolean).join(" ") ||
-      `Patient #${patient.id}`
-    );
-  };
-
-  const getAppointmentLabel = (appointment: Record<string, unknown>) => {
-    const date = appointment.appointment_date as string | undefined;
-    const time = appointment.appointment_time as string | undefined;
+  const getAppointmentLabel = (appointment: Appointment) => {
+    const date = appointment.appointment_date ?? "";
+    const time = appointment.appointment_time ?? "";
+    const patientFirstName =
+      appointment.patient?.full_name ?? "Unknown patient";
     return date
-      ? `#${appointment.id} ${date}${time ? ` • ${time}` : ""}`
+      ? `${patientFirstName} • ${date}${time ? ` • ${time}` : ""}`
       : `Appointment #${appointment.id}`;
   };
 
@@ -201,39 +185,6 @@ const CreateMedicalRecordDialog: React.FC = () => {
                 required
               />
               {renderFieldError("age")}
-            </div>
-
-            <div className="grid gap-2">
-              <label
-                htmlFor="patient"
-                className="text-foreground text-sm font-medium"
-              >
-                Patient<span className="text-destructive">*</span>
-              </label>
-              <Select
-                value={formData.patient ? String(formData.patient) : ""}
-                onValueChange={(value) => handleNumberChange("patient", value)}
-                required
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select patient" />
-                </SelectTrigger>
-                <SelectContent>
-                  {patientsList.length === 0 ? (
-                    <SelectItem value="NONE">No patients available</SelectItem>
-                  ) : (
-                    patientsList.map((patient) => (
-                      <SelectItem
-                        key={patient.id as number}
-                        value={String(patient.id as number)}
-                      >
-                        {getPatientLabel(patient)}
-                      </SelectItem>
-                    ))
-                  )}
-                </SelectContent>
-              </Select>
-              {renderFieldError("patient")}
             </div>
 
             <div className="grid gap-2">
