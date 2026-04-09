@@ -1,6 +1,6 @@
 "use client";
 
-import { Edit, Eye, SearchIcon, Trash, User } from "lucide-react";
+import { Eye, SearchIcon, User } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
@@ -29,6 +29,8 @@ import {
 } from "@/types/Admin/Receptionists/ReceptionistsType";
 import { formatChoiceFieldValue } from "../../../../../../utils/formatters";
 import AddReceptionistDialog from "./Dialogs/AddReceptionistDialog";
+import DeleteReceptionistDialog from "./Dialogs/DeleteReceptionistDialog";
+import EditReceptionistDialog from "./Dialogs/EditReceptionistDialog";
 
 const ReceptionistList: React.FC = () => {
   const [query, setQuery] = useState("");
@@ -60,6 +62,11 @@ const ReceptionistList: React.FC = () => {
     { length: totalPages },
     (_, index) => index + 1,
   );
+
+  const getRawReceptionist = (alias: string): ReceptionistApiItem | undefined =>
+    (receptionistsResponse?.results ?? []).find(
+      (item: ReceptionistApiItem) => item.alias === alias,
+    );
 
   const filteredReceptionists = useMemo(
     () =>
@@ -167,12 +174,16 @@ const ReceptionistList: React.FC = () => {
                         <Eye />
                       </Link>
                     </Button>
-                    <Button size="sm" variant="secondary">
-                      <Edit />
-                    </Button>
-                    <Button size="sm" variant="danger">
-                      <Trash />
-                    </Button>
+                    {getRawReceptionist(receptionist.alias) ? (
+                      <EditReceptionistDialog
+                        alias={receptionist.alias}
+                        initialValues={getRawReceptionist(receptionist.alias)!}
+                      />
+                    ) : null}
+                    <DeleteReceptionistDialog
+                      alias={receptionist.alias}
+                      receptionistName={receptionist.name}
+                    />
                   </div>
                 </TableCell>
               </TableRow>

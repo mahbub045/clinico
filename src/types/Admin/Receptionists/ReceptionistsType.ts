@@ -46,3 +46,15 @@ export type AddReceptionistPayload = {
   desk_number: string;
   experience_years: string | null;
 };
+
+export type EditReceptionistDialogProps = {
+  alias: string;
+  initialValues: ReceptionistApiItem;
+  children?: React.ReactNode;
+};
+
+export type DeleteReceptionistDialogProps = {
+  alias: string;
+  receptionistName?: string;
+  children?: React.ReactNode;
+};

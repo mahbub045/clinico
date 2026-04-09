@@ -104,23 +104,35 @@ const AddReceptionistDialog: React.FC = () => {
     setFieldErrors({});
 
     try {
-      const body = new FormData();
-      body.append("email", formData.email);
-      body.append("password", formData.password);
-      body.append("first_name", formData.first_name);
-      body.append("last_name", formData.last_name);
-      body.append("phone", formData.phone);
-      body.append("title", formData.title || "");
-      body.append("suburb", formData.suburb);
-      body.append("postal_code", formData.postal_code);
-      body.append("address", formData.address);
-      body.append("employee_id", formData.employee_id);
-      body.append("joining_date", formData.joining_date || "");
-      body.append("shift", formData.shift);
-      body.append("desk_number", formData.desk_number);
-      body.append("experience_years", formData.experience_years || "");
-      if (formData.profile_image) {
-        body.append("profile_image", formData.profile_image);
+      const payload = {
+        email: formData.email,
+        password: formData.password,
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        phone: formData.phone,
+        title: formData.title || "",
+        suburb: formData.suburb,
+        postal_code: formData.postal_code,
+        address: formData.address,
+        employee_id: formData.employee_id,
+        joining_date: formData.joining_date ?? null,
+        shift: formData.shift,
+        desk_number: formData.desk_number,
+        experience_years: formData.experience_years ?? null,
+      } as Record<string, unknown>;
+
+      const body: FormData | Record<string, unknown> =
+        formData.profile_image != null ? new FormData() : payload;
+
+      if (body instanceof FormData) {
+        Object.entries(payload).forEach(([key, value]) => {
+          if (value !== null) {
+            body.append(key, String(value));
+          }
+        });
+        if (formData.profile_image) {
+          body.append("profile_image", formData.profile_image);
+        }
       }
 
       await addReceptionist(body).unwrap();
