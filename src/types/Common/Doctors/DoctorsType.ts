@@ -11,6 +11,15 @@ export type RawDoctor = {
   phone?: string;
   degree?: string;
   experience_years?: number;
+  joined_date?: string;
+  address?: string;
+  suburb?: string;
+  postal_code?: string;
+  chamber_room?: string;
+  gender?: string;
+  bio?: string;
+  created_at?: string;
+  updated_at?: string;
   [key: string]: unknown;
 };
 
