@@ -23,6 +23,27 @@ export type RawDoctor = {
   [key: string]: unknown;
 };
 
+export type AddDoctorPayload = {
+  email: string;
+  password: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  title: string | null;
+  suburb: string;
+  postal_code: string;
+  address: string;
+  profile_image: File | null;
+  degree: string;
+  specialization: string;
+  joined_date: string | null;
+  consultation_fee: string | null;
+  chamber_room: string;
+  experience_years: string | null;
+  bio: string;
+  gender: string | null;
+};
+
 export type DoctorsResponse =
   | RawDoctor[]
   | {
