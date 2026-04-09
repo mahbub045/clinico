@@ -1,5 +1,12 @@
 "use client";
-import { Eye, LoaderPinwheel, SearchIcon } from "lucide-react";
+import {
+  Edit,
+  Eye,
+  LoaderPinwheel,
+  Plus,
+  SearchIcon,
+  Trash2,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -22,7 +29,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetMedicalRecordsQuery } from "@/redux/reducers/Common/MedicalRecords/MedicalRecordsApi";
+import {
+  useDeleteMedicalRecordMutation,
+  useGetMedicalRecordsQuery,
+} from "@/redux/reducers/Common/MedicalRecords/MedicalRecordsApi";
 import { MedicalRecordItem } from "@/types/Common/MedicalRecords/MedicalRecordsType";
 import { formatDate } from "../../../../../utils/formatters";
 
@@ -59,6 +69,7 @@ const MedicalRecordList: React.FC = () => {
 
   const { data: medicalRecords, isLoading } =
     useGetMedicalRecordsQuery(queryParams);
+  const [deleteMedicalRecord] = useDeleteMedicalRecordMutation();
 
   const records = useMemo<MedicalRecordItem[]>(() => {
     if (!medicalRecords) return [];
@@ -100,18 +111,24 @@ const MedicalRecordList: React.FC = () => {
             </p>
           </div>
 
-          <div className="relative w-full sm:max-w-sm">
-            <SearchIcon className="text-primary pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-            <Input
-              id="medical-record-search"
-              value={query}
-              onChange={(event) => {
-                setQuery(event.target.value);
-                setPage(1);
-              }}
-              placeholder="Search records by patient, condition or doctor..."
-              className="w-full pl-10"
-            />
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+            <div className="relative w-full sm:max-w-sm">
+              <SearchIcon className="text-primary pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+              <Input
+                id="medical-record-search"
+                value={query}
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                  setPage(1);
+                }}
+                placeholder="Search records..."
+                className="w-full pl-10"
+              />
+            </div>
+            <Button variant="secondary" size="sm">
+              <Plus className="h-4 w-4" />
+              Create record
+            </Button>
           </div>
         </div>
 
@@ -186,14 +203,42 @@ const MedicalRecordList: React.FC = () => {
                       </TableCell>
                       <TableCell>{formatDate(record.created_at)}</TableCell>
                       <TableCell className="text-right">
-                        <Button asChild variant="default" size="sm">
-                          <Link
-                            href={`/dashboard/${dashboardRole}/medical-records/${record.alias}`}
-                            aria-label={`View medical record for ${patientName}`}
+                        <div className="inline-flex items-center justify-end gap-2">
+                          <Button asChild variant="default" size="sm">
+                            <Link
+                              href={`/dashboard/${dashboardRole}/medical-records/${record.alias}`}
+                              aria-label={`View medical record for ${patientName}`}
+                            >
+                              <Eye />
+                            </Link>
+                          </Button>
+                          <Button asChild variant="secondary" size="sm">
+                            <Link
+                              href={`/dashboard/${dashboardRole}/medical-records/${record.alias}/edit`}
+                              aria-label={`Edit medical record for ${patientName}`}
+                            >
+                              <Edit />
+                            </Link>
+                          </Button>
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={async () => {
+                              if (
+                                window.confirm(
+                                  `Delete medical record for ${patientName}?`,
+                                )
+                              ) {
+                                await deleteMedicalRecord(
+                                  record.alias,
+                                ).unwrap();
+                              }
+                            }}
+                            aria-label={`Delete medical record for ${patientName}`}
                           >
-                            <Eye />
-                          </Link>
-                        </Button>
+                            <Trash2 />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   );
